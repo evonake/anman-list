@@ -1,4 +1,6 @@
 import React from 'react';
+import { BrowserRouter, Switch, Route } from "react-router-dom";
+
 import './App.css';
 
 import Login from './views/Login';
@@ -13,30 +15,33 @@ class App extends React.Component {
     super(props);
 
     this.state = {
-      view: 'login',
+      username: '',
     };
+
+    this.logIn = this.logIn.bind(this);
+  }
+
+  logIn(username) {
+    this.setState({ username: username });
   }
 
   render() {
-    const views = {
-      login: <Login
-                server={ myServer }
-                goHome={ () => this.setState({ view: 'home' }) }
-                goSignup={ () => this.setState({ view: 'signup' }) } />,
-
-      signup: <Signup
-                server={ myServer }
-                goHome={ () => this.setState({ view: 'home' }) }
-                goLogin={ () => this.setState({ view: 'login' }) } />,
-
-      home:  <Home
-                server={ myServer }
-                goLogin={ () => this.setState({ view: 'login' }) } />,
-    }
     return (
-      <div className='App'>
-        {views[this.state.view]}
-      </div>
+      <BrowserRouter>
+        <div className='App'>
+          <Switch>
+            <Route exact path='/'>
+              <Login server={ myServer } logIn={ (u) => this.logIn(u) }/>
+            </Route>
+            <Route path='/signup'>
+              <Signup server={ myServer } logIn={ (u) => this.logIn(u) }/>
+            </Route>
+            <Route path="/home">
+              <Home server={ myServer } username={this.state.username} />
+            </Route>
+          </Switch>
+        </div>
+      </BrowserRouter>
     )
   }
 }

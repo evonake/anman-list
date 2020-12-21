@@ -1,4 +1,5 @@
 import React from 'react';
+import { Link, Redirect } from 'react-router-dom';
 
 import Button         from '@material-ui/core/Button';
 import IconButton     from '@material-ui/core/IconButton';
@@ -35,12 +36,18 @@ class Signup extends React.Component {
       loginButtonHover:  false,
     }
 
+    this.goHome              = this.goHome.bind(this);
     this.handleText          = this.handleText.bind(this);
     this.handleHover         = this.handleHover.bind(this);
     this.handleKeyPress      = this.handleKeyPress.bind(this);
     this.handleSignupClick   = this.handleSignupClick.bind(this);
     this.handlePasswordClick = this.handlePasswordClick.bind(this);
     this.handleConfirmClick  = this.handleConfirmClick.bind(this);
+  }
+
+  goHome() {
+    this.props.logIn(this.state.username);
+    this.setState({ goHome: true });
   }
 
   handleText(type, value) {
@@ -192,12 +199,16 @@ class Signup extends React.Component {
         onClick={this.props.goLogin}
         onMouseEnter={ () => this.handleHover('login', 'on') }
         onMouseLeave={ () => this.handleHover('login', 'off') }>
-          Login
+          <Link className='link' to='/'>Login</Link>
       </Button>
     );
   }
 
   render() {
+    if (this.state.goHome) {
+      return <Redirect to='home' />;
+    }
+
     return (
       <div className='LoginSignup' onKeyPress={this.handleKeyPress}>
         <Typography variant='h5'>
