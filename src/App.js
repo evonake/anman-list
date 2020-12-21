@@ -5,6 +5,7 @@ import Login from './views/Login';
 import Home  from './views/Home';
 
 import myServer from './server';
+import Signup from './views/Signup';
 
 
 class App extends React.Component {
@@ -20,11 +21,17 @@ class App extends React.Component {
     const views = {
       login: <Login
                 server={ myServer }
-                goHome={ () => this.setState({ view: 'home' }) }/>,
+                goHome={ () => this.setState({ view: 'home' }) }
+                goSignup={ () => this.setState({ view: 'signup' }) } />,
+
+      signup: <Signup
+                server={ myServer }
+                goHome={ () => this.setState({ view: 'home' }) }
+                goLogin={ () => this.setState({ view: 'login' }) } />,
 
       home:  <Home
                 server={ myServer }
-                goLogin={ () => this.setState({ view: 'login' }) } />
+                goLogin={ () => this.setState({ view: 'login' }) } />,
     }
     return (
       <div className='App'>

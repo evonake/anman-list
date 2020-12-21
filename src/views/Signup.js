@@ -13,26 +13,31 @@ import VisibilityOff from '@material-ui/icons/VisibilityOff';
 
 import './LoginSignup.css';
 
-class Login extends React.Component {
+
+class Signup extends React.Component {
   constructor(props) {
     super(props);
 
     this.state = {
-      username:       '',
-      password:       '',
+      username:      '',
+      password:      '',
+      confirm:       '',
 
-      usernameError:  '',
-      passwordError:  '',
+      usernameError: '',
+      passwordError: '',
+      confirmError:  '',
 
       hidePassword: true,
-      loginButtonHover: false,
+      hideConfirm:  true,
       signupButtonHover: false,
+      loginButtonHover: false,
     }
 
     this.handleText          = this.handleText.bind(this);
-    this.handleHover   = this.handleHover.bind(this);
-    this.handleLoginClick    = this.handleLoginClick.bind(this);
+    this.handleHover         = this.handleHover.bind(this);
+    this.handleSignupClick   = this.handleSignupClick.bind(this);
     this.handlePasswordClick = this.handlePasswordClick.bind(this);
+    this.handleConfirmClick  = this.handleConfirmClick.bind(this);
   }
 
   handleText(type, value) {
@@ -45,39 +50,47 @@ class Login extends React.Component {
     this.setState({
       usernameError: type === 'username' ? false : this.state.usernameError,
       passwordError: type === 'password' ? false : this.state.passwordError,
+      confirmError:  type === 'confirm'  ? false : this.state.confirmError,
     });
   }
 
   handleHover(type) {
     this.setState({
-      loginButtonHover: type === 'login' ? !this.state.loginButtonHover : this.state.loginButtonHover,
       signupButtonHover: type === 'signup' ? !this.state.signupButtonHover : this.state.signupButtonHover,
+      loginButtonHover: type === 'login' ? !this.state.loginButtonHover : this.state.loginButtonHover,
     });
   }
 
-  async handleLoginClick() {
+  async handleSignupClick() {
     if (this.state.username === '') {
       this.setState({ usernameError: 'Invalid username.' });
       return;
-    } else if (!(await this.props.server.userExists(this.state.username))) {
-      this.setState({ usernameError: 'Username not taken.' });
+    } else if (await this.props.server.userExists(this.state.username)) {
+      this.setState({ usernameError: 'Username already taken.' });
       return;
     }
 
     if (this.state.password === '') {
       this.setState({ passwordError: 'Invalid password.' });
       return;
-    } else if (!(await this.props.server.verifyPassword(this.state.username, this.state.password))) {
-      this.setState({ loginConfirmError: 'Incorrect password.' });
+    } else if (this.state.password !== this.state.confirm) {
+      this.setState({ confirmError: 'Passwords don\'t match.' });
       return;
     }
 
+    this.props.server.newUser(this.state.username, this.state.password);
     this.props.goHome();
   }
 
   handlePasswordClick() {
     this.setState({
       hidePassword: !this.state.hidePassword,
+    });
+  }
+
+  handleConfirmClick() {
+    this.setState({
+      hideConfirm: !this.state.hideConfirm,
     });
   }
 
@@ -120,6 +133,30 @@ class Login extends React.Component {
     );
   }
 
+  renderConfirm() {
+    return (
+      <FormControl error={this.state.confirmError}>
+        <InputLabel>Confirm Password</InputLabel>
+        <Input
+          className='input'
+          error={this.state.confirmError}
+          id='standard-basic'
+          type={this.state.hideConfirm ? 'password' : 'text'}
+          value={this.state.confirm}
+          helperText={this.state.confirmError}
+          onClick={ () => this.handleInputClick('confirm') }
+          onChange={e => this.handleText('confirm', e.target.value)}
+          endAdornment={
+            <InputAdornment position='end'>
+              <IconButton onClick={this.handleConfirmClick}>
+                {this.state.hideConfirm ? <VisibilityOff /> : <Visibility />}
+              </IconButton>
+            </InputAdornment>}/>
+        <FormHelperText color='secondary'>{this.state.confirmError ? this.state.confirmError : ' '}</FormHelperText>
+      </FormControl>
+    );
+  }
+
   render() {
     return (
       <div className='LoginSignup'>
@@ -131,30 +168,34 @@ class Login extends React.Component {
 
         <br/><br/>
 
+        {this.renderConfirm()}
+
+        <br/><br/>
+
         <Button
           className='button'
-          variant={this.state.loginButtonHover ? 'contained' : 'outlined'}
+          variant={this.state.signupButtonHover ? 'contained' : 'outlined'}
           color='primary'
-          onClick={this.handleLoginClick}
-          onMouseEnter={ () => this.handleHover('login') }
-          onMouseLeave={ () => this.handleHover('login') }>
-            Login
+          onClick={this.handleSignupClick}
+          onMouseEnter={ () => this.handleHover('signup') }
+          onMouseLeave={ () => this.handleHover('signup') }>
+            Sign up
         </Button>
 
         <br/><br/>
 
         <Button
           className='button'
-          variant={this.state.signupButtonHover ? 'outlined' : ''}
+          variant={this.state.loginButtonHover ? 'outlined' : ''}
           color='primary'
-          onClick={this.props.goSignup}
-          onMouseEnter={ () => this.handleHover('signup') }
-          onMouseLeave={ () => this.handleHover('signup') }>
-            Sign up
+          onClick={this.props.goLogin}
+          onMouseEnter={ () => this.handleHover('login') }
+          onMouseLeave={ () => this.handleHover('login') }>
+            Login
         </Button>
       </div>
     );
   }
 }
 
-export default Login;
+export default Signup;
