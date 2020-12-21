@@ -7,9 +7,10 @@ import InputLabel     from '@material-ui/core/InputLabel';
 import InputAdornment from '@material-ui/core/InputAdornment';
 import FormControl    from '@material-ui/core/FormControl';
 import FormHelperText from '@material-ui/core/FormHelperText';
+import Typography     from '@material-ui/core/Typography';
 
-import Visibility    from '@material-ui/icons/Visibility';
-import VisibilityOff from '@material-ui/icons/VisibilityOff';
+import Visibility     from '@material-ui/icons/Visibility';
+import VisibilityOff  from '@material-ui/icons/VisibilityOff';
 
 import './LoginSignup.css';
 
@@ -18,19 +19,20 @@ class Login extends React.Component {
     super(props);
 
     this.state = {
-      username:       '',
-      password:       '',
+      username:      '',
+      password:      '',
 
-      usernameError:  '',
-      passwordError:  '',
+      usernameError: '',
+      passwordError: '',
 
-      hidePassword: true,
-      loginButtonHover: false,
+      hidePassword:      true,
+      loginButtonHover:  false,
       signupButtonHover: false,
     }
 
     this.handleText          = this.handleText.bind(this);
-    this.handleHover   = this.handleHover.bind(this);
+    this.handleHover         = this.handleHover.bind(this);
+    this.handleKeyPress      = this.handleKeyPress.bind(this);
     this.handleLoginClick    = this.handleLoginClick.bind(this);
     this.handlePasswordClick = this.handlePasswordClick.bind(this);
   }
@@ -38,6 +40,8 @@ class Login extends React.Component {
   handleText(type, value) {
     this.setState({
       [type]: value,
+      usernameError: type === 'username' ? false : this.state.usernameError,
+      passwordError: type === 'password' ? false : this.state.passwordError,
     });
   }
 
@@ -48,11 +52,17 @@ class Login extends React.Component {
     });
   }
 
-  handleHover(type) {
+  handleHover(type, pos) {
     this.setState({
-      loginButtonHover: type === 'login' ? !this.state.loginButtonHover : this.state.loginButtonHover,
-      signupButtonHover: type === 'signup' ? !this.state.signupButtonHover : this.state.signupButtonHover,
+      loginButtonHover:  type === 'login' ? (pos === 'on' ? true : false) : this.state.loginButtonHover,
+      signupButtonHover: type === 'signup' ? (pos === 'on' ? true : false) : this.state.signupButtonHover,
     });
+  }
+
+  handleKeyPress(e) {
+    if (e.key === 'Enter') {
+      this.handleLoginClick();
+    }
   }
 
   async handleLoginClick() {
@@ -120,9 +130,43 @@ class Login extends React.Component {
     );
   }
 
+  renderLoginButton() {
+    return (
+      <Button
+        className='button'
+        variant={this.state.loginButtonHover ? 'contained' : 'outlined'}
+        color='primary'
+        onClick={this.handleLoginClick}
+        onMouseEnter={ () => this.handleHover('login', 'on') }
+        onMouseLeave={ () => this.handleHover('login', 'off') }>
+          Login
+      </Button>
+    );
+  }
+
+  renderSignupButton() {
+    return (
+      <Button
+        className='button'
+        variant={this.state.signupButtonHover ? 'outlined' : ''}
+        color='primary'
+        onClick={this.props.goSignup}
+        onMouseEnter={ () => this.handleHover('signup', 'on') }
+        onMouseLeave={ () => this.handleHover('signup', 'off') }>
+          Sign up
+      </Button>
+    );
+  }
+
   render() {
     return (
-      <div className='LoginSignup'>
+      <div className='LoginSignup' onKeyPress={this.handleKeyPress}>
+        <Typography variant='h5'>
+          LOGIN
+        </Typography>
+
+        <br/>
+
         {this.renderUsername()}
 
         <br/><br/>
@@ -131,27 +175,12 @@ class Login extends React.Component {
 
         <br/><br/>
 
-        <Button
-          className='button'
-          variant={this.state.loginButtonHover ? 'contained' : 'outlined'}
-          color='primary'
-          onClick={this.handleLoginClick}
-          onMouseEnter={ () => this.handleHover('login') }
-          onMouseLeave={ () => this.handleHover('login') }>
-            Login
-        </Button>
+        {this.renderLoginButton()}
 
         <br/><br/>
 
-        <Button
-          className='button'
-          variant={this.state.signupButtonHover ? 'outlined' : ''}
-          color='primary'
-          onClick={this.props.goSignup}
-          onMouseEnter={ () => this.handleHover('signup') }
-          onMouseLeave={ () => this.handleHover('signup') }>
-            Sign up
-        </Button>
+        {this.renderSignupButton()}
+
       </div>
     );
   }
