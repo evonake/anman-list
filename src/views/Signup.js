@@ -1,5 +1,5 @@
 import React from 'react';
-import { Link, Redirect } from 'react-router-dom';
+import { Redirect } from 'react-router-dom';
 
 import Button         from '@material-ui/core/Button';
 import IconButton     from '@material-ui/core/IconButton';
@@ -36,6 +36,12 @@ class Signup extends React.Component {
       loginButtonHover:  false,
     }
 
+    const username = localStorage.getItem('username');
+    if (username) {
+      this.props.logIn(username);
+      this.state = { leavePage: 'home' };
+    }
+
     this.goHome              = this.goHome.bind(this);
     this.handleText          = this.handleText.bind(this);
     this.handleHover         = this.handleHover.bind(this);
@@ -47,7 +53,7 @@ class Signup extends React.Component {
 
   goHome() {
     this.props.logIn(this.state.username);
-    this.setState({ goHome: true });
+    this.setState({ leavePage: 'home' });
   }
 
   handleText(type, value) {
@@ -196,17 +202,17 @@ class Signup extends React.Component {
         className='button'
         variant={this.state.loginButtonHover ? 'outlined' : ''}
         color='primary'
-        onClick={this.props.goLogin}
+        onClick={ () => this.setState({ leavePage: '/' }) }
         onMouseEnter={ () => this.handleHover('login', 'on') }
         onMouseLeave={ () => this.handleHover('login', 'off') }>
-          <Link className='link' to='/'>Login</Link>
+          Login
       </Button>
     );
   }
 
   render() {
-    if (this.state.goHome) {
-      return <Redirect to='home' />;
+    if (this.state.leavePage) {
+      return <Redirect to={this.state.leavePage} />;
     }
 
     return (
