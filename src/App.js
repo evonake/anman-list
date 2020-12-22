@@ -16,6 +16,10 @@ class App extends React.Component {
       username: '',
     };
 
+    if (!this.state.username && localStorage.getItem('username')) {
+      this.state = { username: localStorage.getItem('username') };
+    }
+
     this.logIn = this.logIn.bind(this);
   }
 
@@ -26,21 +30,21 @@ class App extends React.Component {
 
   render() {
     return (
-        <BrowserRouter>
-          <div className='App'>
-            <Switch>
-              <Route exact path='/'>
-                <Login server={ myServer } logIn={ (u) => this.logIn(u) }/>
-              </Route>
-              <Route path='/signup'>
-                <Signup server={ myServer } logIn={ (u) => this.logIn(u) }/>
-              </Route>
-              <Route path="/home">
-                <Home server={ myServer } username={this.state.username} />
-              </Route>
-            </Switch>
-          </div>
-        </BrowserRouter>
+      <BrowserRouter>
+        <div className='App'>
+          <Switch>
+            <Route exact path='/'>
+              <Login server={ myServer } logIn={ (u) => this.logIn(u) }/>
+            </Route>
+            <Route path='/signup'>
+              <Signup server={ myServer } logIn={ (u) => this.logIn(u) }/>
+            </Route>
+            <Route path="/home">
+              <Home server={ myServer } username={this.state.username} />
+            </Route>
+          </Switch>
+        </div>
+      </BrowserRouter>
     )
   }
 }

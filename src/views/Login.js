@@ -1,5 +1,4 @@
 import React from 'react';
-import { Redirect } from 'react-router-dom';
 
 import Button         from '@material-ui/core/Button';
 import IconButton     from '@material-ui/core/IconButton';
@@ -29,12 +28,11 @@ class Login extends React.Component {
       hidePassword:      true,
       loginButtonHover:  false,
       signupButtonHover: false,
-    }
+    };
 
-    const username = localStorage.getItem('username');
-    if (username) {
-      this.props.logIn(username);
-      this.state = { leavePage: 'home' };
+    if (localStorage.getItem('username')) {
+      this.props.logIn(localStorage.getItem('username'));
+      window.location.href = '/home';
     }
 
     this.goHome              = this.goHome.bind(this);
@@ -47,7 +45,7 @@ class Login extends React.Component {
 
   goHome() {
     this.props.logIn(this.state.username);
-    this.setState({ leavePage: 'home' });
+    window.location.href = '/home';
   }
 
   handleText(type, value) {
@@ -67,7 +65,7 @@ class Login extends React.Component {
 
   handleHover(type, pos) {
     this.setState({
-      loginButtonHover:  type === 'login' ? (pos === 'on' ? true : false) : this.state.loginButtonHover,
+      loginButtonHover:  type === 'login'  ? (pos === 'on' ? true : false) : this.state.loginButtonHover,
       signupButtonHover: type === 'signup' ? (pos === 'on' ? true : false) : this.state.signupButtonHover,
     });
   }
@@ -99,9 +97,7 @@ class Login extends React.Component {
   }
 
   handlePasswordClick() {
-    this.setState({
-      hidePassword: !this.state.hidePassword,
-    });
+    this.setState({ hidePassword: !this.state.hidePassword });
   }
 
   renderUsername() {
@@ -163,7 +159,7 @@ class Login extends React.Component {
         className='button'
         variant={this.state.signupButtonHover ? 'outlined' : ''}
         color='primary'
-        onClick={ () => this.setState({ leavePage: 'signup' }) }
+        onClick={ () => window.location.href = '/signup' }
         onMouseEnter={ () => this.handleHover('signup', 'on') }
         onMouseLeave={ () => this.handleHover('signup', 'off') }>
           Sign Up
@@ -172,13 +168,9 @@ class Login extends React.Component {
   }
 
   render() {
-    if (this.state.leavePage) {
-      return <Redirect to={this.state.leavePage}/>;
-    }
-
     return (
       <div className='LoginSignup' onKeyPress={this.handleKeyPress}>
-        <Typography variant='h5' style={{ palette: 'dark' }}>
+        <Typography variant='h5'>
           LOGIN
         </Typography>
 
