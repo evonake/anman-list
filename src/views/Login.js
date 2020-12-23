@@ -90,7 +90,7 @@ class Login extends React.Component {
       this.setState({ passwordError: 'Invalid password.' });
       return;
     } else if (!(await this.props.server.verifyPassword(this.state.username, this.state.password))) {
-      this.setState({ loginConfirmError: 'Incorrect password.' });
+      this.setState({ passwordError: 'Incorrect password.' });
       return;
     }
 
