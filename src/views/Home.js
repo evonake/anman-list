@@ -11,6 +11,10 @@ class Home extends React.Component {
 
     this.state = {};
 
+    if (!this.props.username || !this.props.token) {
+      this.state = { leavePage: 'login' };
+    }
+
     this.handleSignOutClick = this.handleSignOutClick.bind(this);
   }
 

@@ -101,7 +101,7 @@ class Signup extends React.Component {
     }
 
     this.props.server.newUser(this.state.username, this.state.password);
-    this.props.logIn(this.state.username);
+    await this.props.logIn(this.state.username);
     this.setState({ leavePage: '/' });
   }
 

@@ -94,7 +94,7 @@ class Login extends React.Component {
       return;
     }
 
-    this.props.logIn(this.state.username);
+    await this.props.logIn(this.state.username);
     this.setState({ leavePage: '/' });
   }
 

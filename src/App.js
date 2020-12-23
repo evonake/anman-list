@@ -57,6 +57,14 @@ class App extends React.Component {
       <BrowserRouter>
         <div className='App'>
           <Switch>
+            <Route exact path='/'>
+              <Home
+                server={ myServer }
+                username={this.state.username}
+                token={this.state.token}
+                signOut={ () => this.signOut() }
+                isValid={this.isValidSession}/>
+            </Route>
             <Route path='/login'>
               <Login
                 server={ myServer }
@@ -68,13 +76,6 @@ class App extends React.Component {
                 server={ myServer }
                 logIn={ (u) => this.logIn(u) }
                 isValid={this.isValidSession} />
-            </Route>
-            <Route exact path='/'>
-              <Home
-                server={ myServer }
-                username={this.state.username}
-                signOut={ () => this.signOut() }
-                isValid={this.isValidSession}/>
             </Route>
           </Switch>
         </div>
