@@ -1,5 +1,5 @@
 import React from 'react';
-import { BrowserRouter, Switch, Route } from "react-router-dom";
+import { BrowserRouter, Switch, Route } from 'react-router-dom';
 
 import './App.css';
 
@@ -13,19 +13,43 @@ class App extends React.Component {
     super(props);
 
     this.state = {
-      username: '',
+      username: localStorage.getItem('username'),
+      token: localStorage.getItem('token'),
     };
 
-    if (!this.state.username && localStorage.getItem('username')) {
-      this.state = { username: localStorage.getItem('username') };
-    }
-
-    this.logIn = this.logIn.bind(this);
+    this.logIn          = this.logIn.bind(this);
+    this.signOut        = this.signOut.bind(this);
+    this.isValidSession = this.isValidSession.bind(this);
   }
 
-  logIn(username) {
-    this.setState({ username: username });
+  async componentDidMount() {
+    if (this.isValidSession()) {
+
+    }
+  }
+
+  async logIn(username) {
+    const token = await myServer.generateToken(username);
+    this.setState({
+      username: username,
+      token: token,
+    });
     localStorage.setItem('username', username);
+    localStorage.setItem('token', token);
+  }
+
+  signOut() {
+    myServer.destroyToken(this.state.username);
+    this.setState({
+      username: '',
+      token: '',
+    });
+    localStorage.removeItem('username');
+    localStorage.removeItem('token');
+  }
+
+  async isValidSession() {
+    return await myServer.verifyToken(this.state.username, this.state.token);
   }
 
   render() {
@@ -33,14 +57,24 @@ class App extends React.Component {
       <BrowserRouter>
         <div className='App'>
           <Switch>
-            <Route exact path='/'>
-              <Login server={ myServer } logIn={ (u) => this.logIn(u) }/>
+            <Route path='/login'>
+              <Login
+                server={ myServer }
+                logIn={ (u) => this.logIn(u) }
+                isValid={this.isValidSession} />
             </Route>
             <Route path='/signup'>
-              <Signup server={ myServer } logIn={ (u) => this.logIn(u) }/>
+              <Signup
+                server={ myServer }
+                logIn={ (u) => this.logIn(u) }
+                isValid={this.isValidSession} />
             </Route>
-            <Route path="/home">
-              <Home server={ myServer } username={this.state.username} />
+            <Route exact path='/'>
+              <Home
+                server={ myServer }
+                username={this.state.username}
+                signOut={ () => this.signOut() }
+                isValid={this.isValidSession}/>
             </Route>
           </Switch>
         </div>
