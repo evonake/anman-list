@@ -108,7 +108,6 @@ class Login extends React.Component {
         <InputLabel>Username</InputLabel>
         <Input
           className='input'
-          id='standard-basic'
           value={this.state.username}
           onClick={ () => this.handleInputClick('username') }
           onChange={e => this.handleText('username', e.target.value)}/>
@@ -124,7 +123,6 @@ class Login extends React.Component {
         <Input
           className='input'
           error={this.state.passwordError}
-          id='standard-basic'
           type={this.state.hidePassword ? 'password' : 'text'}
           value={this.state.password}
           helperText={this.state.passwordError}

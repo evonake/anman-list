@@ -119,7 +119,6 @@ class Signup extends React.Component {
         <InputLabel>Username</InputLabel>
         <Input
           className='input'
-          id='standard-basic'
           value={this.state.username}
           onClick={ () => this.handleInputClick('username') }
           onChange={e => this.handleText('username', e.target.value)}/>
@@ -135,7 +134,6 @@ class Signup extends React.Component {
         <Input
           className='input'
           error={this.state.passwordError}
-          id='standard-basic'
           type={this.state.hidePassword ? 'password' : 'text'}
           value={this.state.password}
           helperText={this.state.passwordError}
@@ -159,7 +157,6 @@ class Signup extends React.Component {
         <Input
           className='input'
           error={this.state.confirmError}
-          id='standard-basic'
           type={this.state.hideConfirm ? 'password' : 'text'}
           value={this.state.confirm}
           helperText={this.state.confirmError}

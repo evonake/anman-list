@@ -5,6 +5,8 @@ import './Home.css';
 
 import Button from '@material-ui/core/Button';
 
+import ItemList from '../components/ItemList';
+
 class Home extends React.Component {
   constructor(props) {
     super(props);
@@ -37,7 +39,14 @@ class Home extends React.Component {
 
     return (
       <div className='Home'>
-        <Button variant='outlined' color='primary' onClick={this.handleSignOutClick}>Sign Out</Button>
+        <Button
+          className='signout'
+          variant='outlined'
+          color='primary'
+          onClick={this.handleSignOutClick}>
+            Sign Out
+        </Button>
+        <ItemList />
       </div>
     );
   }
