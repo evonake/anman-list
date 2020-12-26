@@ -1,8 +1,9 @@
 .ItemList {
   width: 60%;
-  max-width: 600px;
+  min-width: 500px;
+  max-width: 700px;
   position: absolute;
   left: 50%;
-  top: 20%;
+  /* top: 20%; */
   transform: translate(-50%, -0%);
 }

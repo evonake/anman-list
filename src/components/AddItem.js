@@ -2,38 +2,41 @@ import React from 'react';
 
 import './Item.css';
 
-import Grid        from '@material-ui/core/Grid';
-import Paper       from '@material-ui/core/Paper';
-import Typography  from '@material-ui/core/Typography';
-import IconButton  from '@material-ui/core/IconButton';
+import Grid       from '@material-ui/core/Grid';
+import Paper      from '@material-ui/core/Paper';
+import Switch     from '@material-ui/core/Switch';
+import Button     from '@material-ui/core/Button';
+import TextField  from '@material-ui/core/TextField';
+import IconButton from '@material-ui/core/IconButton';
 
 import KeyboardArrowUpIcon from '@material-ui/icons/KeyboardArrowUp';
 import KeyboardArrowDownIcon from '@material-ui/icons/KeyboardArrowDown';
 
-class Item extends React.Component {
+class AddItem extends React.Component {
   constructor(props) {
     super(props);
-
-    this.state = {
-      title: this.props.title,
-      link: this.props.link,
-      season: this.props.season,
-      episode: this.props.episode,
-    };
   }
 
   render() {
     return (
-      <Paper className='Item'>
+      <Paper className='Item' style={{ borderStyle: 'solid', borderWidth: '1px', borderColor: '#5F527A' }}>
         <Grid container direction='row' className='cell'>
           <Grid item xs={10} container direction='column' className='contentText'>
-            <Typography noWrap variant='h6'>
-              {this.state.title}
-            </Typography>
+            <Grid item container direciton='row' alignItems='center'>
+              <Grid item xs={8}>
+                <TextField label='Title' variant='outlined' style={{ width: '80%' }}/>
+              </Grid>
+              <Grid item xs container direction='row' alignItems='center'>
+                <Grid item>S/E</Grid>
+                <Grid item><Switch /></Grid>
+                <Grid item>Ch.</Grid>
+              </Grid>
+            </Grid>
             <br/>
-            <Typography noWrap variant='body1'>
-              {this.state.link}
-            </Typography>
+            <Grid item container direction='row' alignItems='center'>
+              <TextField label='Link' variant='outlined' size='small' style={{ width: '70%', margin: '0 10% 0 0' }} />
+              <Button variant='outlined'>Add</Button>
+            </Grid>
           </Grid>
 
           <Grid item xs container>
@@ -44,7 +47,7 @@ class Item extends React.Component {
                 </IconButton>
               </Grid>
               <Grid item>
-                <Typography variant='overline'>{this.state.season}</Typography>
+                <TextField defaultValue='1' variant='outlined' size='small' style={{ width: '90%' }} inputProps={{style: { textAlign: 'center',  padding: '10.5px 7px'}}}/>
               </Grid>
               <Grid item>
                 <IconButton size='small' onClick={ () => {console.log('season down') }} >
@@ -59,7 +62,7 @@ class Item extends React.Component {
                 </IconButton>
               </Grid>
               <Grid item>
-                <Typography variant='overline'>{this.state.episode}</Typography>
+                <TextField defaultValue='1' variant='outlined' size='small' style={{ width: '90%' }} inputProps={{style: { textAlign: 'center',  padding: '10.5px 7px'}}}/>
               </Grid>
               <Grid item>
                 <IconButton size='small' onClick={ () => {console.log('episode down') }}>
@@ -74,4 +77,4 @@ class Item extends React.Component {
   }
 }
 
-export default Item;
+export default AddItem;

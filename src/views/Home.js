@@ -20,6 +20,12 @@ class Home extends React.Component {
     this.handleSignOutClick = this.handleSignOutClick.bind(this);
   }
 
+  async componentDidMount() {
+    this.setState({
+      userData: await this.props.server.getUserData(this.props.username)
+    });
+  }
+
   async shouldComponentUpdate(nextProps, nextState) {
     if (!await nextProps.isValid()) {
       this.setState({ leavePage: 'login' });
@@ -46,7 +52,8 @@ class Home extends React.Component {
           onClick={this.handleSignOutClick}>
             Sign Out
         </Button>
-        <ItemList />
+        <br/><br/>
+        <ItemList server={this.props.server} data={this.state.userData} />
       </div>
     );
   }

@@ -82,28 +82,36 @@ class server {
     });
   }
 
-  newManga(username, {name, link, chapter}) {
+  newManga(username, {title, link, chapter}) {
     return
   }
 
-  modifyManga(username, {name, link, chapter}) {
+  modifyManga(username, {title, link, chapter}) {
     return;
   }
 
-  removeManga(username, name) {
+  removeManga(username, title) {
     return;
   }
 
-  newAnime(username, {name, link, season, episode}) {
+  newAnime(username, {title, link, season, episode}) {
     return;
   }
 
-  modifyAnime(username, {name, link, season, episode}) {
+  modifyAnime(username, type, title, data) {
+    db.ref(`${username}/animes/${type}/${title}`).update(data);
+  }
+
+  removeAnime(username, title) {
     return;
   }
 
-  removeAnime(username, name) {
-    return;
+  async getUserData(username) {
+    let data;
+    await db.ref(`${username}`).once('value', snapshot => {
+      data = snapshot.val();
+    });
+    return data;
   }
 }
 
