@@ -82,8 +82,10 @@ class server {
     });
   }
 
-  newManga(username, {title, link, chapter}) {
-    return
+  newManga(username, type, title, data) {
+    db.ref(`${username}/mangas/${type}`).update({
+      [title]: data,
+    });
   }
 
   modifyManga(username, {title, link, chapter}) {
@@ -94,8 +96,10 @@ class server {
     return;
   }
 
-  newAnime(username, {title, link, season, episode}) {
-    return;
+  newAnime(username, type, title, data) {
+    db.ref(`${username}/animes/${type}`).update({
+      [title]: data,
+    });
   }
 
   modifyAnime(username, type, title, data) {
@@ -106,9 +110,9 @@ class server {
     return;
   }
 
-  async getUserData(username) {
+  async getUserData(username, mediaType, type) {
     let data;
-    await db.ref(`${username}`).once('value', snapshot => {
+    await db.ref(`${username}/${mediaType}s/${type}`).once('value', snapshot => {
       data = snapshot.val();
     });
     return data;

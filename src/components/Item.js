@@ -15,14 +15,60 @@ class Item extends React.Component {
     super(props);
 
     this.state = {
-      title: this.props.title,
-      link: this.props.link,
-      season: this.props.season,
+      title:   this.props.title,
+      link:    this.props.link,
+      season:  this.props.season,
       episode: this.props.episode,
+      chapter: this.props.chapter,
     };
   }
 
+  updateItem() {
+    // this.props.updateItem
+  }
+
+  renderSeasonCounter() {
+    return (
+      <Grid item xs container direction='column' justify='center'>
+        <Grid item>
+          <IconButton size='small' onClick={ () => {console.log('season down') }}>
+            <KeyboardArrowUpIcon />
+          </IconButton>
+        </Grid>
+        <Grid item>
+          <Typography variant='overline'>{this.state.season}</Typography>
+        </Grid>
+        <Grid item>
+          <IconButton size='small' onClick={ () => {console.log('season down') }} >
+            <KeyboardArrowDownIcon />
+          </IconButton>
+        </Grid>
+      </Grid>
+    );
+  }
+
+  renderEpisodeChapterCounter() {
+    return (
+      <Grid item xs container direction='column' justify='center'>
+        <Grid item>
+          <IconButton size='small' onClick={ () => {console.log('episode up') }} >
+            <KeyboardArrowUpIcon />
+          </IconButton>
+        </Grid>
+        <Grid item>
+          <Typography variant='overline'>{this.props.type === 'manga' ? this.state.chapter : this.state.episode}</Typography>
+        </Grid>
+        <Grid item>
+          <IconButton size='small' onClick={ () => {console.log('episode down') }}>
+            <KeyboardArrowDownIcon />
+          </IconButton>
+        </Grid>
+      </Grid>
+    );
+  }
+
   render() {
+    console.log(this.state)
     return (
       <Paper className='Item'>
         <Grid container direction='row' className='cell'>
@@ -37,36 +83,8 @@ class Item extends React.Component {
           </Grid>
 
           <Grid item xs container>
-            <Grid item xs container direction='column' justify='center'>
-              <Grid item>
-                <IconButton size='small' onClick={ () => {console.log('season up') }} >
-                  <KeyboardArrowUpIcon />
-                </IconButton>
-              </Grid>
-              <Grid item>
-                <Typography variant='overline'>{this.state.season}</Typography>
-              </Grid>
-              <Grid item>
-                <IconButton size='small' onClick={ () => {console.log('season down') }} >
-                  <KeyboardArrowDownIcon />
-                </IconButton>
-              </Grid>
-            </Grid>
-            <Grid item xs container direction='column' justify='center'>
-              <Grid item>
-                <IconButton size='small' onClick={ () => {console.log('episode up') }} >
-                  <KeyboardArrowUpIcon />
-                </IconButton>
-              </Grid>
-              <Grid item>
-                <Typography variant='overline'>{this.state.episode}</Typography>
-              </Grid>
-              <Grid item>
-                <IconButton size='small' onClick={ () => {console.log('episode down') }}>
-                  <KeyboardArrowDownIcon />
-                </IconButton>
-              </Grid>
-            </Grid>
+            {this.props.type === 'manga' ? <div/> : this.renderSeasonCounter()}
+            {this.renderEpisodeChapterCounter()}
           </Grid>
         </Grid>
       </Paper>

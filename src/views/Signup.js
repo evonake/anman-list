@@ -39,8 +39,8 @@ class Signup extends React.Component {
       this.setState({ leavePage: '/' });
     }
 
-    this.handleText          = this.handleText.bind(this);
-    this.handleHover         = this.handleHover.bind(this);
+    // this.handleText          = this.handleText.bind(this);
+    // this.handleHover         = this.handleHover.bind(this);
     this.handleKeyPress      = this.handleKeyPress.bind(this);
     this.handleSignupClick   = this.handleSignupClick.bind(this);
     this.handlePasswordClick = this.handlePasswordClick.bind(this);

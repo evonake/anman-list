@@ -36,8 +36,8 @@ class Login extends React.Component {
       this.setState({ leavePage: '/' });
     }
 
-    this.handleText          = this.handleText.bind(this);
-    this.handleHover         = this.handleHover.bind(this);
+    // this.handleText          = this.handleText.bind(this);
+    // this.handleHover         = this.handleHover.bind(this);
     this.handleKeyPress      = this.handleKeyPress.bind(this);
     this.handleLoginClick    = this.handleLoginClick.bind(this);
     this.handlePasswordClick = this.handlePasswordClick.bind(this);
@@ -125,7 +125,6 @@ class Login extends React.Component {
           error={this.state.passwordError}
           type={this.state.hidePassword ? 'password' : 'text'}
           value={this.state.password}
-          helperText={this.state.passwordError}
           onClick={ () => this.handleInputClick('password') }
           onChange={e => this.handleText('password', e.target.value)}
           endAdornment={
@@ -157,7 +156,7 @@ class Login extends React.Component {
     return (
       <Button
         className='button'
-        variant={this.state.signupButtonHover ? 'outlined' : ''}
+        variant={this.state.signupButtonHover ? 'outlined' : 'text'}
         color='primary'
         onClick={ () => this.setState({ leavePage: 'signup' }) }
         onMouseEnter={ () => this.handleHover('signup', 'on') }
