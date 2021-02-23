@@ -21,6 +21,8 @@ class AddItem extends React.Component {
       season:  this.props.season  || 1,
       episode: this.props.episode || 1,
       chapter: this.props.chapter || 1,
+      titleError: false,
+      linkError: false,
     };
 
     this.submit = this.submit.bind(this);
@@ -46,8 +48,23 @@ class AddItem extends React.Component {
     this.setState({ [type]: value });
   }
 
+  handleInputClick(type) {
+    this.setState({
+      titleError: type === 'title' ? false : this.state.titleError,
+      linkError:  type === 'link' ? false : this.state.linkError,
+    });
+  }
+
   async submit() {
     // check if inputs are valid
+    if (!this.state.title) {
+      this.setState({ titleError: true });
+      return;
+    }
+    if (!this.state.link) {
+      this.setState({ linkError: true })
+      return;
+    }
 
     if (this.props.type === 'manga') {
       await this.props.submitManga(this.state.title, { 'chapter': this.state.chapter, 'link': this.state.link });
@@ -61,9 +78,10 @@ class AddItem extends React.Component {
       season: 1,
       episode: 1,
       chapter: 1,
+      titleError: false,
+      linkError: false,
     });
   }
-
 
   renderSeasonCounter() {
     return (
@@ -133,24 +151,27 @@ class AddItem extends React.Component {
             <Grid item container direciton='row' alignItems='center'>
               <TextField
                 label='Title'
+                error={this.state.titleError}
                 variant='outlined'
                 style={{ width: '90%' }}
                 value={this.state.title}
+                onClick={ () => this.handleInputClick('title') }
                 onChange={ (e) => this.handleInput('title', e.target.value) }/>
             </Grid>
             <br/>
             <Grid item container direction='row' alignItems='center'>
               <TextField
                 label='Link'
+                error={this.state.linkError}
                 variant='outlined'
                 size='small'
                 style={{ width: '75%', margin: '0 5% 0 0' }}
                 value={this.state.link}
+                onClick={ () => this.handleInputClick('link') }
                 onChange={ (e) => this.handleInput('link', e.target.value) }/>
               <Button variant='outlined' onClick={this.submit}>Add</Button>
             </Grid>
           </Grid>
-
           <Grid item xs container>
             {this.props.type === 'manga' ? <div/> : this.renderSeasonCounter()}
             {this.renderEpisodeChapterCounter()}
