@@ -7,6 +7,8 @@ import Paper       from '@material-ui/core/Paper';
 import Typography  from '@material-ui/core/Typography';
 import IconButton  from '@material-ui/core/IconButton';
 
+import ClearIcon from '@material-ui/icons/Clear';
+import CheckIcon from '@material-ui/icons/Check';
 import KeyboardArrowUpIcon from '@material-ui/icons/KeyboardArrowUp';
 import KeyboardArrowDownIcon from '@material-ui/icons/KeyboardArrowDown';
 
@@ -73,13 +75,25 @@ class Item extends React.Component {
       <Paper className='Item'>
         <Grid container direction='row' className='cell'>
           <Grid item xs={10} container direction='column' className='contentText'>
-            <Typography noWrap variant='h6' style={{ 'width': '100%' }}>
-              {this.state.title}
-            </Typography>
+            <Grid item style={{ 'width': '100%' }}>
+              <Typography noWrap variant='h6'>
+                {this.state.title}
+              </Typography>
+            </Grid>
             <br/>
-            <Typography noWrap variant='body1' style={{ 'width': '100%' }}>
-              {this.state.link}
-            </Typography>
+            <Grid item container direction='row'>
+              <Grid item xs={10}>
+                <Typography noWrap variant='body1'>
+                  <a href={this.state.link}>{this.state.link}</a>
+                </Typography>
+              </Grid>
+              <Grid item xs container justify='center'>
+                <CheckIcon />
+              </Grid>
+              <Grid item xs container justify='center'>
+                <ClearIcon />
+              </Grid>
+            </Grid>
           </Grid>
 
           <Grid item xs container>
