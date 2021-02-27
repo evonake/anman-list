@@ -73,11 +73,11 @@ class Item extends React.Component {
       <Paper className='Item'>
         <Grid container direction='row' className='cell'>
           <Grid item xs={10} container direction='column' className='contentText'>
-            <Typography noWrap variant='h6'>
+            <Typography noWrap variant='h6' style={{ 'width': '100%' }}>
               {this.state.title}
             </Typography>
             <br/>
-            <Typography noWrap variant='body1'>
+            <Typography noWrap variant='body1' style={{ 'width': '100%' }}>
               {this.state.link}
             </Typography>
           </Grid>
