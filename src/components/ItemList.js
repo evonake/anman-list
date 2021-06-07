@@ -66,7 +66,9 @@ class ItemList extends React.Component {
                     episode={a.episode}
                     chapter={a.chapter}
                     link={a.link}
-                    type={this.props.mediaType}/>})}
+                    type={this.props.mediaType}
+                    update={this.updateItem}
+                    toggleSnackbar={this.props.toggleSnackbar}/>})}
       </div>
     );
   }

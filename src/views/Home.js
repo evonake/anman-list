@@ -7,6 +7,8 @@ import Tab    from '@material-ui/core/Tab';
 import Tabs   from '@material-ui/core/Tabs';
 import Paper  from '@material-ui/core/Paper';
 import Button from '@material-ui/core/Button';
+import Snackbar from '@material-ui/core/Snackbar';
+
 
 import ItemList from '../components/ItemList';
 
@@ -16,6 +18,7 @@ class Home extends React.Component {
 
     this.state = {
       tab: 'anime',
+      snackbarOpen: false,
     };
 
     if (!this.props.username || !this.props.token) {
@@ -24,7 +27,12 @@ class Home extends React.Component {
 
     this.refresh            = this.refresh.bind(this);
     this.handleTab          = this.handleTab.bind(this);
+    this.toggleSnackbar     = this.toggleSnackbar.bind(this);
     this.handleSignOutClick = this.handleSignOutClick.bind(this);
+  }
+
+  toggleSnackbar() {
+    this.setState({ snackbarOpen: !this.state.snackbarOpen });
   }
 
   async componentDidMount() {
@@ -90,7 +98,18 @@ class Home extends React.Component {
           type='ongoing'
           server={this.props.server}
           data={this.state.userData}
-          refresh={this.refresh}/>
+          refresh={this.refresh}
+          toggleSnackbar={this.toggleSnackbar}/>
+
+        <Snackbar
+          anchorOrigin={{
+            vertical: 'bottom',
+            horizontal: 'left',
+          }}
+          open={this.state.snackbarOpen}
+          autoHideDuration={3000}
+          onClose={this.toggleSnackbar}
+          message="Link copied."/>
       </div>
     );
   }

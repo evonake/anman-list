@@ -11,37 +11,106 @@ import ClearIcon from '@material-ui/icons/Clear';
 import CheckIcon from '@material-ui/icons/Check';
 import KeyboardArrowUpIcon from '@material-ui/icons/KeyboardArrowUp';
 import KeyboardArrowDownIcon from '@material-ui/icons/KeyboardArrowDown';
+import { Snackbar } from '@material-ui/core';
 
 class Item extends React.Component {
   constructor(props) {
     super(props);
 
     this.state = {
-      title:   this.props.title,
-      link:    this.props.link,
-      season:  this.props.season,
-      episode: this.props.episode,
-      chapter: this.props.chapter,
+      original: {
+        title:   this.props.title,
+        link:    this.props.link,
+        season:  this.props.season,
+        episode: this.props.episode,
+        chapter: this.props.chapter,
+      },
+      new: {
+        title:   this.props.title,
+        link:    this.props.link,
+        season:  this.props.season,
+        episode: this.props.episode,
+        chapter: this.props.chapter,
+      },
     };
+
+    this.itemHasUpdated = this.itemHasUpdated.bind(this);
+    this.updateItem = this.updateItem.bind(this);
+  }
+
+  copyLink() {
+    navigator.clipboard.writeText(this.state.new.link);
+    this.props.toggleSnackbar();
+  }
+
+  itemHasUpdated() {
+    const original = this.state.original;
+    const n = this.state.new;
+
+    if (original.title && original.title !== n.title) {
+      return true;
+    }
+    if (original.link && original.link !== n.link) {
+      return true;
+    }
+    if (original.season && original.season !== n.season) {
+      return true;
+    }
+    if (original.episode && original.episode !== n.episode) {
+      return true;
+    }
+    if (original.chapter && original.chapter !== n.chapter) {
+      return true;
+    }
+    return false;
   }
 
   updateItem() {
-    // this.props.updateItem
+    if (this.itemHasUpdated()) {
+      this.props.update(this.state.new.title, this.state.new)
+    }
+  }
+
+  handleInput(type, value) {
+    if (type === 'epch') {
+      type = this.props.type === 'manga' ? 'chapter' : 'episode';
+    }
+
+    if (['season', 'episode', 'chapter'].includes(type)) {
+      if (isNaN(Number(value))) {
+        return;
+      }
+
+      value = Number(value)
+
+      if (value < 0) {
+        value = 0;
+      }
+      console.log(value);
+    }
+
+    this.setState(prevState => ({
+      new: {
+        ...prevState.new,
+        [type]: value
+      }
+    }));
+    console.log(this.state);
   }
 
   renderSeasonCounter() {
     return (
       <Grid item xs container direction='column' justify='center'>
         <Grid item>
-          <IconButton size='small' onClick={ () => {console.log('season down') }}>
+          <IconButton size='small' onClick={ () => this.handleInput('season', this.state.new.season + 1) }>
             <KeyboardArrowUpIcon />
           </IconButton>
         </Grid>
         <Grid item>
-          <Typography variant='overline'>{this.state.season}</Typography>
+          <Typography variant='overline'>{this.state.new.season}</Typography>
         </Grid>
         <Grid item>
-          <IconButton size='small' onClick={ () => {console.log('season down') }} >
+          <IconButton size='small' onClick={ () => this.handleInput('season', this.state.new.season - 1) }>
             <KeyboardArrowDownIcon />
           </IconButton>
         </Grid>
@@ -53,15 +122,15 @@ class Item extends React.Component {
     return (
       <Grid item xs container direction='column' justify='center'>
         <Grid item>
-          <IconButton size='small' onClick={ () => {console.log('episode up') }} >
+          <IconButton size='small' onClick={ () => this.handleInput('epch', this.props.type === 'manga' ? this.state.new.chapter + 1 : this.state.new.episode + 1) }>
             <KeyboardArrowUpIcon />
           </IconButton>
         </Grid>
         <Grid item>
-          <Typography variant='overline'>{this.props.type === 'manga' ? this.state.chapter : this.state.episode}</Typography>
+          <Typography variant='overline'>{this.props.type === 'manga' ? this.state.new.chapter : this.state.new.episode}</Typography>
         </Grid>
         <Grid item>
-          <IconButton size='small' onClick={ () => {console.log('episode down') }}>
+          <IconButton size='small' onClick={ () => this.handleInput('epch', this.props.type === 'manga' ? this.state.chapter - 1 : this.state.new.episode - 1) }>
             <KeyboardArrowDownIcon />
           </IconButton>
         </Grid>
@@ -70,35 +139,37 @@ class Item extends React.Component {
   }
 
   render() {
-    console.log(this.state)
     return (
       <Paper className='Item'>
         <Grid container direction='row' className='cell'>
-          <Grid item xs={10} container direction='column' className='contentText'>
+          <Grid item xs={9} container direction='column' className='contentText'>
             <Grid item style={{ 'width': '100%' }}>
               <Typography noWrap variant='h6'>
-                {this.state.title}
+                {this.state.new.title}
               </Typography>
             </Grid>
             <br/>
             <Grid item container direction='row'>
-              <Grid item xs={10}>
-                <Typography noWrap variant='body1'>
-                  <a href={this.state.link}>{this.state.link}</a>
+              <Grid item xs>
+                <Typography noWrap variant='body2' color="primary" onClick={() => this.copyLink()}>
+                  <a className="link">{this.state.new.link}</a>
                 </Typography>
-              </Grid>
-              <Grid item xs container justify='center'>
-                <CheckIcon />
-              </Grid>
-              <Grid item xs container justify='center'>
-                <ClearIcon />
               </Grid>
             </Grid>
           </Grid>
 
-          <Grid item xs container>
+          <Grid item xs={2} container>
             {this.props.type === 'manga' ? <div/> : this.renderSeasonCounter()}
             {this.renderEpisodeChapterCounter()}
+          </Grid>
+
+          <Grid item xs={1} container justify="center" alignItems="center">
+            <IconButton disabled={!this.itemHasUpdated()} onClick={this.updateItem} >
+              <CheckIcon />
+            </IconButton>
+            <IconButton disabled={!this.itemHasUpdated()} onClick={this.updateItem}>
+              <ClearIcon />
+            </IconButton>
           </Grid>
         </Grid>
       </Paper>

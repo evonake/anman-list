@@ -119,7 +119,7 @@ class AddItem extends React.Component {
         <Grid item>
           <IconButton
             size='small'
-            onClick={ () => this.handleInput('epch', this.props.type === 'manga' ? this.state.chapter + 1: this.state.episode + 1) } >
+            onClick={ () => this.handleInput('epch', this.props.type === 'manga' ? this.state.chapter + 1 : this.state.episode + 1) } >
             <KeyboardArrowUpIcon />
           </IconButton>
         </Grid>
