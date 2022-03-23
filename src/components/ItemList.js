@@ -1,10 +1,61 @@
-import React from 'react';
+import React, { useState, useEffect } from 'react';
+import isEqual from 'lodash.isequal';
 
 import './ItemList.css';
 
+import { getUserData } from '../server';
 import Item    from './Item';
 import AddItem from './AddItem';
 
+
+function ItemList(props) {
+  const [data, setData] = useState(undefined);
+
+  useEffect(() => {
+    const a = async () => {
+      const newData = await getUserData(props.username, props.tab, 'ongoing')
+      if (!isEqual(data, newData)) {
+        setData(newData);
+      }
+    };
+    a();
+  });
+
+  if (!data) {
+    return (
+      <div className='ItemList'>
+        <AddItem
+          type={props.mediaType}/>
+      </div>
+    );
+  }
+
+  let items = [];
+  for (const [key, value] of Object.entries(data)) {
+    items.push({title: key, season: value.season, episode: value.episode, chapter: value.chapter, link: value.link});
+  }
+
+  return (
+    <div className='ItemList'>
+      <AddItem
+        type={props.mediaType}/>
+      {items.map(a => {
+        return <Item
+                  key={a.title}
+                  title={a.title}
+                  season={a.season}
+                  episode={a.episode}
+                  chapter={a.chapter}
+                  link={a.link}
+                  type={props.mediaType}
+                  toggleSnackbar={props.toggleSnackbar}/>})}
+    </div>
+  );
+}
+
+export default ItemList;
+
+/*
 class ItemList extends React.Component {
   constructor(props) {
     super(props);
@@ -75,3 +126,4 @@ class ItemList extends React.Component {
 }
 
 export default ItemList;
+*/
