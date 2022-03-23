@@ -1,13 +1,14 @@
 import React, { useState, useReducer, useEffect } from 'react';
 import { navigate } from "@reach/router";
-
 import './Home.css';
 
-import Tab from '@material-ui/core/Tab';
-import Tabs from '@material-ui/core/Tabs';
-import Paper from '@material-ui/core/Paper';
-import Button from '@material-ui/core/Button';
-import Snackbar from '@material-ui/core/Snackbar';
+import {
+  Tab,
+  Tabs,
+  Paper,
+  Button,
+  Snackbar,
+} from '@mui/material';
 
 import ItemList from '../components/ItemList';
 

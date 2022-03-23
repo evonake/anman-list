@@ -1,6 +1,5 @@
 import React, {useState} from 'react';
 import { Router } from "@reach/router";
-
 import './App.css';
 
 import {generateToken, verifyToken, destroyToken} from './server';

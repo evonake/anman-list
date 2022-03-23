@@ -1,20 +1,20 @@
-
 import React, { useState, useEffect, useReducer } from 'react';
 import { navigate } from "@reach/router";
-
-import Button from '@material-ui/core/Button';
-import IconButton from '@material-ui/core/IconButton';
-import Input from '@material-ui/core/Input';
-import InputLabel from '@material-ui/core/InputLabel';
-import InputAdornment from '@material-ui/core/InputAdornment';
-import FormControl from '@material-ui/core/FormControl';
-import FormHelperText from '@material-ui/core/FormHelperText';
-import Typography from '@material-ui/core/Typography';
-
-import Visibility from '@material-ui/icons/Visibility';
-import VisibilityOff from '@material-ui/icons/VisibilityOff';
-
 import './LoginSignup.css';
+
+import {
+  Button,
+  IconButton,
+  Input,
+  InputLabel,
+  InputAdornment,
+  FormControl,
+  FormHelperText,
+  Typography,
+} from '@mui/material';
+
+import Visibility from '@mui/icons-material/Visibility';
+import VisibilityOff from '@mui/icons-material/VisibilityOff';
 
 import { userExists, newUser } from '../server';
 

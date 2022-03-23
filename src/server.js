@@ -1,7 +1,9 @@
-import firebase from 'firebase';
+import { initializeApp } from 'firebase/app';
+import { getDatabase, get, ref, child, update } from 'firebase/database';
 import sha256 from 'js-sha256';
 
-firebase.initializeApp({
+
+const app = initializeApp({
   apiKey: 'AIzaSyBeotHm7O-r4F2YUedhn9WMZrTI5U0Hs_M',
   authDomain: 'anman-list.firebaseapp.com',
   databaseURL: 'https://anman-list-default-rtdb.firebaseio.com',
@@ -10,29 +12,29 @@ firebase.initializeApp({
   messagingSenderId: '763409917320',
   appId: '1:763409917320:web:6034f95cf87d62d8b9463d'
 });
-const db = firebase.database();
-
+const db = getDatabase(app);
+const dbRef = ref(db);
 
 export function newUser(username, password) {
-  db.ref('passwords/').update({
-    [username]: sha256(password)
-  });
+  update(child(dbRef, 'passwords/'), { [username]: sha256(password) });
   return;
 }
 
 export async function userExists(username) {
   let exists;
-  await db.ref(`passwords/${username}`).once('value', snapshot => {
-    exists = snapshot.exists();
-  });
+  await get(child(dbRef, `passwords/${username}`))
+    .then(snapshot => {
+      exists = snapshot.exists();
+    })
   return exists
 }
 
 export async function verifyPassword(username, password) {
   let hash;
-  await db.ref(`passwords/${username}`).once('value', snapshot => {
-    hash = snapshot.val();
-  });
+  await get(child(dbRef, `passwords/${username}`))
+    .then(snapshot => {
+      hash = snapshot.val();
+    })
   return sha256(password) === hash;
 }
 
@@ -42,9 +44,10 @@ export function modifyPassword(username, oldPassword, newPassword) {
 
 export async function generateToken(username) {
   let currentToken;
-  await db.ref(`tokens/${username}`).once('value', snapshot => {
-    currentToken = snapshot.val();
-  });
+  await get(child(dbRef, `tokens/${username}`))
+    .then(snapshot => {
+      currentToken = snapshot.val();
+    });
   if (currentToken) {
     return currentToken;
   }
@@ -56,9 +59,7 @@ export async function generateToken(username) {
     token += key32[i].toString(16);
   }
 
-  db.ref('tokens/').update({
-    [username]: token
-  });
+  update(child(dbRef, 'tokens/'), { [username]: token });
   return token;
 }
 
@@ -68,23 +69,20 @@ export async function verifyToken(username, token) {
   }
 
   let realToken;
-  await db.ref(`tokens/${username}`).once('value', snapshot => {
-    realToken = snapshot.val();
-  });
+  await get(child(dbRef, `tokens/${username}`))
+    .then(snapshot => {
+      realToken = snapshot.val();
+    })
 
   return realToken === token;
 }
 
 export function destroyToken(username) {
-  db.ref('tokens/').update({
-    [username]: null
-  });
+  update(child(dbRef, 'tokens/'), { [username]: null } );
 }
 
 export function newManga(username, type, title, data) {
-  db.ref(`${username}/mangas/${type}`).update({
-    [title]: data,
-  });
+  update(child(dbRef, `${username}/mangas/${type}`), { [title]: data });
 }
 
 export function modifyManga(username, { title, link, chapter }) {
@@ -96,13 +94,11 @@ export function removeManga(username, title) {
 }
 
 export function newAnime(username, type, title, data) {
-  db.ref(`${username}/animes/${type}`).update({
-    [title]: data,
-  });
+  update(child(dbRef, `${username}/animes/${type}`), { [title]: data });
 }
 
 export function modifyAnime(username, type, title, data) {
-  db.ref(`${username}/animes/${type}/${title}`).update(data);
+  update(child(dbRef, `${username}/animes/${type}/${title}`), data)
 }
 
 export function removeAnime(username, title) {
@@ -111,8 +107,9 @@ export function removeAnime(username, title) {
 
 export async function getUserData(username, mediaType, type) {
   let data;
-  await db.ref(`${username}/${mediaType}s/${type}`).once('value', snapshot => {
-    data = snapshot.val();
-  });
+  await get(child(dbRef, `${username}/${mediaType}s/${type}`))
+    .then(snapshot => {
+      data = snapshot.val();
+    });
   return data;
 }

@@ -2,14 +2,17 @@ import React from 'react';
 
 import './Item.css';
 
-import Grid       from '@material-ui/core/Grid';
-import Paper      from '@material-ui/core/Paper';
-import Button     from '@material-ui/core/Button';
-import TextField  from '@material-ui/core/TextField';
-import IconButton from '@material-ui/core/IconButton';
+import {
+  Grid,
+  Paper,
+  Button,
+  TextField,
+  IconButton,
+} from '@mui/material';
 
-import KeyboardArrowUpIcon from '@material-ui/icons/KeyboardArrowUp';
-import KeyboardArrowDownIcon from '@material-ui/icons/KeyboardArrowDown';
+import KeyboardArrowUpIcon from '@mui/icons-material/KeyboardArrowUp';
+import KeyboardArrowDownIcon from '@mui/icons-material/KeyboardArrowDown';
+
 
 class AddItem extends React.Component {
   constructor(props) {

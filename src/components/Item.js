@@ -1,17 +1,18 @@
 import React from 'react';
-
 import './Item.css';
 
-import Grid        from '@material-ui/core/Grid';
-import Paper       from '@material-ui/core/Paper';
-import Typography  from '@material-ui/core/Typography';
-import IconButton  from '@material-ui/core/IconButton';
+import {
+  Grid,
+  Paper,
+  Typography,
+  IconButton,
+  Snackbar,
+ } from '@mui/material';
 
-import ClearIcon from '@material-ui/icons/Clear';
-import CheckIcon from '@material-ui/icons/Check';
-import KeyboardArrowUpIcon from '@material-ui/icons/KeyboardArrowUp';
-import KeyboardArrowDownIcon from '@material-ui/icons/KeyboardArrowDown';
-import { Snackbar } from '@material-ui/core';
+import ClearIcon from '@mui/icons-material/Clear';
+import CheckIcon from '@mui/icons-material/Check';
+import KeyboardArrowUpIcon from '@mui/icons-material/KeyboardArrowUp';
+import KeyboardArrowDownIcon from '@mui/icons-material/KeyboardArrowDown';
 
 class Item extends React.Component {
   constructor(props) {
