@@ -2,7 +2,7 @@
   "name": "anman-list",
   "version": "0.1.0",
   "private": true,
-  "homepage": "http://evonake.github.io/anman-list",
+  "homepage": "http://evonake.github.io/anman-list/",
   "scripts": {
     "start": "react-scripts start",
     "build": "react-scripts build",
