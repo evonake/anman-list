@@ -19,7 +19,7 @@ import VisibilityOff from '@mui/icons-material/VisibilityOff';
 import { userExists, verifyPassword } from '../server';
 
 
-function hoverReducer(state, action) {
+function hoverReducer(_, action) {
   switch (action) {
     case 'enter':
       return true;
@@ -35,9 +35,9 @@ function Login(props) {
   const [password, setPassword]          = useState('');
   const [uError, setUError]              = useState('');
   const [pError, setPError]              = useState('');
-  const [hidePassword, swapHidePassword] = useReducer((s, _) => !s, true);
-  const [loginHover, swapLoginHover]     = useReducer(hoverReducer, false);
-  const [signupHover, swapSignupHover]   = useReducer(hoverReducer, false);
+  const [hidePassword, toggleHidePassword] = useReducer((s, _) => !s, true);
+  const [loginHover, toggleLoginHover]     = useReducer(hoverReducer, false);
+  const [signupHover, toggleSignupHover]   = useReducer(hoverReducer, false);
 
 
   const handleText = (type, value) => {
@@ -121,7 +121,7 @@ function Login(props) {
           onChange={e => handleText('password', e.target.value)}
           endAdornment={
             <InputAdornment position='end'>
-              <IconButton onClick={swapHidePassword}>
+              <IconButton onClick={toggleHidePassword}>
                 {hidePassword ? <VisibilityOff /> : <Visibility />}
               </IconButton>
             </InputAdornment>} />
@@ -135,8 +135,8 @@ function Login(props) {
         variant={loginHover ? 'contained' : 'outlined'}
         color='primary'
         onClick={handleLoginClick}
-        onMouseEnter={() => swapLoginHover('enter')}
-        onMouseLeave={() => swapLoginHover('leave')}>
+        onMouseEnter={() => toggleLoginHover('enter')}
+        onMouseLeave={() => toggleLoginHover('leave')}>
         Login
       </Button>
 
@@ -147,8 +147,8 @@ function Login(props) {
         variant={signupHover ? 'outlined' : 'text'}
         color='primary'
         onClick={ () => navigate('/signup') }
-        onMouseEnter={() => swapSignupHover('enter')}
-        onMouseLeave={() => swapSignupHover('leave')}>
+        onMouseEnter={() => toggleSignupHover('enter')}
+        onMouseLeave={() => toggleSignupHover('leave')}>
         Sign Up
       </Button>
 

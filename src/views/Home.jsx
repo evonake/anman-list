@@ -59,8 +59,8 @@ function Home(props) {
 
       <ItemList
         username={props.username}
-        tab={tab}
-        type='ongoing'
+        type={tab}
+        status='ongoing'
         refresh={refresh}
         toggleSnackbar={toggleSnackbar} />
 

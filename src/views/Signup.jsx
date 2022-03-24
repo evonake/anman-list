@@ -37,10 +37,10 @@ function Signup(props) {
   const [uError, setUError]              = useState('');
   const [pError, setPError]              = useState('');
   const [cError, setCError]              = useState('');
-  const [hidePassword, swapHidePassword] = useReducer((s, _) => !s, true);
-  const [hideConfirm, swapHideConfirm]   = useReducer((s, _) => !s, true);
-  const [loginHover, swapLoginHover]     = useReducer(hoverReducer, false);
-  const [signupHover, swapSignupHover]   = useReducer(hoverReducer, false);
+  const [hidePassword, toggleHidePassword] = useReducer((s, _) => !s, true);
+  const [hideConfirm, toggleHideConfirm]   = useReducer((s, _) => !s, true);
+  const [loginHover, toggleLoginHover]     = useReducer(hoverReducer, false);
+  const [signupHover, toggleSignupHover]   = useReducer(hoverReducer, false);
 
   const handleText = (type, value) => {
     if (type === 'username') {
@@ -129,7 +129,7 @@ function Signup(props) {
           onChange={e => handleText('password', e.target.value)}
           endAdornment={
             <InputAdornment position='end'>
-              <IconButton onClick={swapHidePassword}>
+              <IconButton onClick={toggleHidePassword}>
                 {hidePassword ? <VisibilityOff /> : <Visibility />}
               </IconButton>
             </InputAdornment>} />
@@ -149,7 +149,7 @@ function Signup(props) {
           onChange={e => handleText('confirm', e.target.value)}
           endAdornment={
             <InputAdornment position='end'>
-              <IconButton onClick={swapHideConfirm}>
+              <IconButton onClick={toggleHideConfirm}>
                 {hideConfirm ? <VisibilityOff /> : <Visibility />}
               </IconButton>
             </InputAdornment>} />
@@ -163,8 +163,8 @@ function Signup(props) {
         variant={signupHover ? 'contained' : 'outlined'}
         color='primary'
         onClick={handleSignupClick}
-        onMouseEnter={() => swapSignupHover('enter')}
-        onMouseLeave={() => swapSignupHover('leave')}>
+        onMouseEnter={() => toggleSignupHover('enter')}
+        onMouseLeave={() => toggleSignupHover('leave')}>
         Sign up
       </Button>
 
@@ -175,8 +175,8 @@ function Signup(props) {
         variant={loginHover ? 'outlined' : ''}
         color='primary'
         onClick={ () => navigate('/login') }
-        onMouseEnter={() => swapLoginHover('enter')}
-        onMouseLeave={() => swapLoginHover('leave')}>
+        onMouseEnter={() => toggleLoginHover('enter')}
+        onMouseLeave={() => toggleLoginHover('leave')}>
         Login
       </Button>
     </div>

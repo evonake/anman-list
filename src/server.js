@@ -81,8 +81,8 @@ export function destroyToken(username) {
   update(child(dbRef, 'tokens/'), { [username]: null } );
 }
 
-export function newManga(username, type, title, data) {
-  update(child(dbRef, `${username}/mangas/${type}`), { [title]: data });
+export function newManga(username, status, data) {
+  update(child(dbRef, `${username}/mangas/${status}`), { [data.title]: data });
 }
 
 export function modifyManga(username, { title, link, chapter }) {
@@ -93,21 +93,21 @@ export function removeManga(username, title) {
   return;
 }
 
-export function newAnime(username, type, title, data) {
-  update(child(dbRef, `${username}/animes/${type}`), { [title]: data });
+export function newAnime(username, status, data) {
+  update(child(dbRef, `${username}/animes/${status}`), { [data.title]: data });
 }
 
-export function modifyAnime(username, type, title, data) {
-  update(child(dbRef, `${username}/animes/${type}/${title}`), data)
+export function modifyAnime(username, status, title, data) {
+  update(child(dbRef, `${username}/animes/${status}/${title}`), data)
 }
 
 export function removeAnime(username, title) {
   return;
 }
 
-export async function getUserData(username, mediaType, type) {
+export async function getUserData(username, mediaType, status) {
   let data;
-  await get(child(dbRef, `${username}/${mediaType}s/${type}`))
+  await get(child(dbRef, `${username}/${mediaType}s/${status}`))
     .then(snapshot => {
       data = snapshot.val();
     });

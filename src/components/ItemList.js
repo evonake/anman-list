@@ -1,6 +1,5 @@
 import React, { useState, useEffect } from 'react';
 import isEqual from 'lodash.isequal';
-
 import './ItemList.css';
 
 import { getUserData } from '../server';
@@ -13,7 +12,7 @@ function ItemList(props) {
 
   useEffect(() => {
     const a = async () => {
-      const newData = await getUserData(props.username, props.tab, 'ongoing')
+      const newData = await getUserData(props.username, props.type, props.status)
       if (!isEqual(data, newData)) {
         setData(newData);
       }
@@ -25,29 +24,30 @@ function ItemList(props) {
     return (
       <div className='ItemList'>
         <AddItem
-          type={props.mediaType}/>
+          type={props.type}/>
       </div>
     );
   }
 
   let items = [];
-  for (const [key, value] of Object.entries(data)) {
-    items.push({title: key, season: value.season, episode: value.episode, chapter: value.chapter, link: value.link});
+  for (const [, value] of Object.entries(data)) {
+    items.push({title: value.title, season: value.season, episode: value.episode, chapter: value.chapter, link: value.link});
   }
 
   return (
     <div className='ItemList'>
       <AddItem
-        type={props.mediaType}/>
+        username={props.username}
+        type={props.type}
+        status={props.status}
+        refresh={props.refresh}/>
       {items.map(a => {
         return <Item
+                  username={props.username}
                   key={a.title}
-                  title={a.title}
-                  season={a.season}
-                  episode={a.episode}
-                  chapter={a.chapter}
-                  link={a.link}
-                  type={props.mediaType}
+                  data={a}
+                  type={props.type}
+                  status={props.status}
                   toggleSnackbar={props.toggleSnackbar}/>})}
     </div>
   );
