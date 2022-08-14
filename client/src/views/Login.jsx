@@ -1,5 +1,11 @@
-import React, { useState, useReducer, useEffect } from 'react';
-import { navigate } from "@reach/router";
+import React, {
+  useState,
+  useReducer,
+  useEffect,
+  useRef,
+} from 'react';
+import { useDispatch } from 'react-redux';
+import { useNavigate } from 'react-router-dom';
 
 import {
   Button,
@@ -11,12 +17,11 @@ import {
   FormHelperText,
   Typography,
 } from '@mui/material';
-
 import Visibility from '@mui/icons-material/Visibility';
 import VisibilityOff from '@mui/icons-material/VisibilityOff';
 
-import { userExists, verifyPassword } from '../server';
-
+import { login as loginStore } from '../features/userSlice';
+import { login as loginAPI } from '../api/user';
 
 function hoverReducer(_, action) {
   switch (action) {
@@ -29,69 +34,50 @@ function hoverReducer(_, action) {
   }
 }
 
-function Login(props) {
-  const [username, setUsername]          = useState('');
-  const [password, setPassword]          = useState('');
-  const [uError, setUError]              = useState('');
-  const [pError, setPError]              = useState('');
+function Login() {
+  const dispatch = useDispatch();
+  const navigate = useNavigate();
+
+  const userRef = useRef();
+
+  const [username, setUsername] = useState('');
+  const [password, setPassword] = useState('');
+  const [uError, setUError] = useState('');
+  const [pError, setPError] = useState('');
   const [hidePassword, toggleHidePassword] = useReducer((s, _) => !s, true);
-  const [loginHover, toggleLoginHover]     = useReducer(hoverReducer, false);
-  const [signupHover, toggleSignupHover]   = useReducer(hoverReducer, false);
-
-
-  const handleText = (type, value) => {
-    if (type === 'username') {
-      setUsername(value);
-      setUError('');
-    } else if (type === 'password') {
-      setPassword(value);
-      setPError('');
-    }
-  }
-  const handleInputClick = (type) => {
-    if (type === 'username') {
-      setUError('');
-    } else if (type === 'password') {
-      setPError('');
-    }
-  }
-  const handleKeyPress = e => {
-    if (e.key === 'Enter') {
-      handleLoginClick();
-    }
-  }
-  const handleLoginClick = async () => {
-    if (username === '') {
-      setUError('Invalid username.');
-      return;
-    } else if (!(await userExists(username))) {
-      setUError('Username does not exist.');
-      return;
-    }
-
-    if (password === '') {
-      setPError('Invalid password.');
-      return;
-    } else if (!(await verifyPassword(username, password))) {
-      setPError('Incorrect password.');
-      return;
-    }
-
-    await props.logIn(username);
-  }
+  const [loginHover, toggleLoginHover] = useReducer(hoverReducer, false);
+  const [signupHover, toggleSignupHover] = useReducer(hoverReducer, false);
 
   useEffect(() => {
-    const a = async () => {
-      if (await props.isValid()) {
-        navigate('/home');
-      }
+    userRef.current.focus();
+  }, []);
+  useEffect(() => {
+    setUError('');
+  }, [username]);
+  useEffect(() => {
+    setPError('');
+  }, [password]);
+
+  const handleLoginClick = async () => {
+    const res = await loginAPI({ username, password });
+    if (res.success) {
+      dispatch(loginStore(username));
+      setUsername('');
+      setPassword('');
+      navigate('/');
+    } else if (res.errorType === 'username') {
+      setUsername('');
+      setPassword('');
+      setUError(res.errorMessage);
+    } else if (res.errorType === 'password') {
+      setPassword('');
+      setPError(res.errorMessage);
     }
-    a();
-  });
+  };
 
   return (
-    <div className='LoginSignup' onKeyPress={handleKeyPress}>
-      <Typography variant='h5'>
+    <section className="LoginSignup">
+      <Typography variant="h5">
         LOGIN
       </Typography>
 
@@ -100,60 +86,67 @@ function Login(props) {
       <FormControl error={Boolean(uError)}>
         <InputLabel>Username</InputLabel>
         <Input
-          className='input'
+          ref={userRef}
+          className="input"
           value={username}
-          onClick={() => handleInputClick('username')}
-          onChange={e => handleText('username', e.target.value)} />
-        <FormHelperText color='secondary'>{uError || ' '}</FormHelperText>
+          onChange={(e) => setUsername(e.target.value)}
+        />
+        <FormHelperText color="secondary">{uError || ' '}</FormHelperText>
       </FormControl>
 
-      <br /><br />
+      <br />
+      <br />
 
       <FormControl error={Boolean(pError)}>
         <InputLabel>Password</InputLabel>
         <Input
-          className='input'
+          className="input"
           error={Boolean(pError)}
           type={hidePassword ? 'password' : 'text'}
           value={password}
-          onClick={() => handleInputClick('password')}
-          onChange={e => handleText('password', e.target.value)}
-          endAdornment={
-            <InputAdornment position='end'>
+          onChange={(e) => setPassword(e.target.value)}
+          endAdornment={(
+            <InputAdornment position="end">
               <IconButton onClick={toggleHidePassword}>
                 {hidePassword ? <VisibilityOff /> : <Visibility />}
               </IconButton>
-            </InputAdornment>} />
-        <FormHelperText color='secondary'>{pError || ' '}</FormHelperText>
+            </InputAdornment>
+          )}
+        />
+        <FormHelperText color="secondary">{pError || ' '}</FormHelperText>
       </FormControl>
 
-      <br /><br />
+      <br />
+      <br />
 
       <Button
-        className='button'
+        type="submit"
+        className="button"
         variant={loginHover ? 'contained' : 'outlined'}
-        color='primary'
+        color="primary"
         onClick={handleLoginClick}
         onMouseEnter={() => toggleLoginHover('enter')}
-        onMouseLeave={() => toggleLoginHover('leave')}>
+        onMouseLeave={() => toggleLoginHover('leave')}
+      >
         Login
       </Button>
 
-      <br /><br />
+      <br />
+      <br />
 
       <Button
-        className='button'
+        className="button"
         variant={signupHover ? 'outlined' : 'text'}
-        color='primary'
-        onClick={ () => navigate('/signup') }
+        color="primary"
+        onClick={() => navigate('/signup')}
         onMouseEnter={() => toggleSignupHover('enter')}
-        onMouseLeave={() => toggleSignupHover('leave')}>
+        onMouseLeave={() => toggleSignupHover('leave')}
+      >
         Sign Up
       </Button>
 
-    </div>
+    </section>
   );
 }
-
 
 export default Login;

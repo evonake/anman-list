@@ -2,14 +2,16 @@ const mongoose = require('mongoose');
 
 const animeSchema = new mongoose.Schema({
   // username of owner
-  username: {
+  ownerId: {
     type: String,
+    trim: true,
     required: true,
     immutable: true,
   },
   // title of anime
   title: {
     type: String,
+    trim: true,
     required: true,
   },
   // saved episode
@@ -25,11 +27,13 @@ const animeSchema = new mongoose.Schema({
   // link to watch
   link: {
     type: String,
+    trim: true,
     default: '',
   },
   // status: ongoing/completed/dropped
   status: {
     type: String,
+    trim: true,
     default: 'ongoing',
   },
 });

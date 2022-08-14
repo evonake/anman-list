@@ -7,16 +7,16 @@ const userSchema = new mongoose.Schema({
   // username (used in login) (unique)
   username: {
     type: String,
+    trim: true,
     required: true,
     unique: true,
   },
   // password (encrypted with bcrypt)
   password: {
     type: String,
+    trim: true,
     required: true,
   },
-  // authetication token
-  token: String,
 });
 
 module.exports = mongoose.model('User', userSchema);

@@ -1,6 +1,10 @@
-import React, { useState, useReducer, useEffect } from 'react';
-import { navigate } from "@reach/router";
-
+import React, {
+  useState,
+  useReducer,
+  useEffect,
+} from 'react';
+import { useDispatch } from 'react-redux';
+import { useNavigate } from 'react-router-dom';
 import {
   Tab,
   Tabs,
@@ -9,59 +13,59 @@ import {
   Snackbar,
 } from '@mui/material';
 
+import { logout } from '../api/user';
+import { fetchAnime } from '../api/anime';
 import ItemList from '../components/ItemList';
 
+function Home() {
+  const dispatch = useDispatch();
+  const navigate = useNavigate();
 
-function Home(props) {
-  const [tab, changeTab]           = useState('anime');
+  const [tab, changeTab] = useState('anime');
   const [snackbar, toggleSnackbar] = useReducer((s, _) => !s, false);
 
-  const handleSignOutClick = () => {
-    props.signOut();
-    navigate('/login');
-  }
-  const refresh = async () => {
-    if (!await props.isValid()) {
-      navigate('/login');
-    }
-  }
   useEffect(() => {
-    const a = async () => {
-      await refresh();
-    }
-    a();
-  });
+    dispatch()
+  }, [tab]);
+
+  const handleSignOutClick = () => {
+    logout();
+    navigate('/login');
+  };
 
   return (
-    <div className='Home'>
+    <div className="Home">
       <Paper>
         <Tabs
           value={tab}
           onChange={(_, v) => changeTab(v)}
-          centered>
-          <Tab value='anime' label='anime' />
-          <Tab value='manga' label='manga' />
+          centered
+        >
+          <Tab value="anime" label="anime" />
+          <Tab value="manga" label="manga" />
         </Tabs>
       </Paper>
 
-      <br /><br />
+      <br />
+      <br />
 
       <Button
-        className='signout'
-        variant='outlined'
-        color='primary'
-        onClick={handleSignOutClick}>
+        className="signout"
+        variant="outlined"
+        color="primary"
+        onClick={handleSignOutClick}
+      >
         Sign Out
       </Button>
 
-      <br /><br />
+      <br />
+      <br />
 
       <ItemList
-        username={props.username}
         type={tab}
-        status='ongoing'
-        refresh={refresh}
-        toggleSnackbar={toggleSnackbar} />
+        status="ongoing"
+        toggleSnackbar={toggleSnackbar}
+      />
 
       <Snackbar
         anchorOrigin={{
@@ -71,7 +75,8 @@ function Home(props) {
         open={snackbar}
         autoHideDuration={3000}
         onClose={toggleSnackbar}
-        message="Link copied." />
+        message="Link copied."
+      />
     </div>
   );
 }

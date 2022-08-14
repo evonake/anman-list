@@ -8,9 +8,10 @@ const connectDB = async () => {
     });
 
     console.log('MongoDB Connected');
+    return mongoose.connection.getClient();
   } catch (error) {
     console.log(error);
-    process.exit(1);
+    return process.exit(1);
   }
 };
 

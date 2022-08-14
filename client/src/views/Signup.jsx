@@ -1,5 +1,11 @@
-import React, { useState, useEffect, useReducer } from 'react';
-import { navigate } from "@reach/router";
+import React, {
+  useState,
+  useReducer,
+  useEffect,
+  useRef,
+} from 'react';
+import { useDispatch } from 'react-redux';
+import { useNavigate } from 'react-router-dom';
 
 import {
   Button,
@@ -11,14 +17,13 @@ import {
   FormHelperText,
   Typography,
 } from '@mui/material';
-
 import Visibility from '@mui/icons-material/Visibility';
 import VisibilityOff from '@mui/icons-material/VisibilityOff';
 
-import { userExists, newUser } from '../server';
+import { login as loginStore } from '../features/userSlice';
+import { login as loginAPI, register as registerAPI } from '../api/user';
 
-
-function hoverReducer(state, action) {
+function hoverReducer(_, action) {
   switch (action) {
     case 'enter':
       return true;
@@ -29,77 +34,63 @@ function hoverReducer(state, action) {
   }
 }
 
-function Signup(props) {
-  const [username, setUsername]          = useState('');
-  const [password, setPassword]          = useState('');
-  const [confirm, setConfirm]            = useState('');
-  const [uError, setUError]              = useState('');
-  const [pError, setPError]              = useState('');
-  const [cError, setCError]              = useState('');
+function Signup() {
+  const dispatch = useDispatch();
+  const navigate = useNavigate();
+
+  const userRef = useRef();
+
+  const [username, setUsername] = useState('');
+  const [password, setPassword] = useState('');
+  const [confirm, setConfirm] = useState('');
+  const [uError, setUError] = useState('');
+  const [pError, setPError] = useState('');
+  const [cError, setCError] = useState('');
   const [hidePassword, toggleHidePassword] = useReducer((s, _) => !s, true);
-  const [hideConfirm, toggleHideConfirm]   = useReducer((s, _) => !s, true);
-  const [loginHover, toggleLoginHover]     = useReducer(hoverReducer, false);
-  const [signupHover, toggleSignupHover]   = useReducer(hoverReducer, false);
-
-  const handleText = (type, value) => {
-    if (type === 'username') {
-      setUsername(value);
-      setUError('');
-    } else if (type === 'password') {
-      setPassword(value);
-      setPError('');
-    } else if (type === 'confirm') {
-      setConfirm(value);
-      setCError('');
-    }
-  }
-  const handleInputClick = (type) => {
-    if (type === 'username') {
-      setUError('');
-    } else if (type === 'password') {
-      setPError('');
-    } else if (type === 'confirm') {
-      setCError('');
-    }
-  }
-  const handleKeyPress = e => {
-    if (e.key === 'Enter') {
-      handleSignupClick();
-    }
-  }
-  const handleSignupClick = async () => {
-    if (username === '') {
-      setUError('Invalid username.');
-      return;
-    } else if (await userExists(username)) {
-      setUError('Username already taken.');
-      return;
-    }
-
-    if (password === '') {
-      setPError('Invalid password.');
-      return;
-    } else if (password !== confirm) {
-      setPError('Passwords don\'t match.');
-      return;
-    }
-
-    newUser(username, password);
-    await props.logIn(username);
-  }
+  const [hideConfirm, toggleHideConfirm] = useReducer((s, _) => !s, true);
+  const [loginHover, toggleLoginHover] = useReducer(hoverReducer, false);
+  const [signupHover, toggleSignupHover] = useReducer(hoverReducer, false);
 
   useEffect(() => {
-    const a = async () => {
-      if (await props.isValid()) {
-        navigate('/home');
-      }
+    userRef.current.focus();
+  }, []);
+  useEffect(() => {
+    setUError('');
+  }, [username]);
+  useEffect(() => {
+    setPError('');
+  }, [password]);
+  useEffect(() => {
+    setCError('');
+  }, [confirm]);
+
+  const handleSignupClick = async () => {
+    const registerRes = await registerAPI({ username, password });
+    if (registerRes.success) {
+      await loginAPI({ username, password });
+      dispatch(loginStore(username));
+      setUsername('');
+      setPassword('');
+      setConfirm('');
+      navigate('/');
+    } else if (registerRes.errorType === 'username') {
+      setUsername('');
+      setPassword('');
+      setConfirm('');
+      setUError(registerRes.errorMessage);
+    } else if (registerRes.errorType === 'password') {
+      setPassword('');
+      setConfirm('');
+      setPError(registerRes.errorMessage);
+    } else if (registerRes.errorType === 'confirm') {
+      setConfirm('');
+      setCError(registerRes.errorMessage);
     }
-    a();
-  });
+  };
 
   return (
-    <div className='LoginSignup' onKeyPress={handleKeyPress}>
-      <Typography variant='h5'>
+    <div className="LoginSignup">
+      <Typography variant="h5">
         SIGN UP
       </Typography>
 
@@ -108,78 +99,88 @@ function Signup(props) {
       <FormControl error={Boolean(uError)}>
         <InputLabel>Username</InputLabel>
         <Input
-          className='input'
+          ref={userRef}
+          className="input"
           value={username}
-          onClick={() => handleInputClick('username')}
-          onChange={e => handleText('username', e.target.value)} />
-        <FormHelperText color='secondary'>{uError || ' '}</FormHelperText>
+          onChange={(e) => setUsername(e.target.value)}
+        />
+        <FormHelperText color="secondary">{uError || ' '}</FormHelperText>
       </FormControl>
 
-      <br /><br />
+      <br />
+      <br />
 
       <FormControl error={Boolean(pError)}>
         <InputLabel>Password</InputLabel>
         <Input
-          className='input'
+          className="input"
           error={Boolean(pError)}
           type={hidePassword ? 'password' : 'text'}
           value={password}
-          onClick={() => handleInputClick('password')}
-          onChange={e => handleText('password', e.target.value)}
-          endAdornment={
-            <InputAdornment position='end'>
+          onChange={(e) => setPassword(e.target.value)}
+          endAdornment={(
+            <InputAdornment position="end">
               <IconButton onClick={toggleHidePassword}>
                 {hidePassword ? <VisibilityOff /> : <Visibility />}
               </IconButton>
-            </InputAdornment>} />
-        <FormHelperText color='secondary'>{pError || ' '}</FormHelperText>
+            </InputAdornment>
+          )}
+        />
+        <FormHelperText color="secondary">{pError || ' '}</FormHelperText>
       </FormControl>
 
-      <br /><br />
+      <br />
+      <br />
 
       <FormControl error={Boolean(cError)}>
         <InputLabel>Confirm Password</InputLabel>
         <Input
-          className='input'
+          className="input"
           error={Boolean(cError)}
           type={hideConfirm ? 'password' : 'text'}
           value={confirm}
-          onClick={() => handleInputClick('confirm')}
-          onChange={e => handleText('confirm', e.target.value)}
-          endAdornment={
-            <InputAdornment position='end'>
+          onChange={(e) => setConfirm(e.target.value)}
+          endAdornment={(
+            <InputAdornment position="end">
               <IconButton onClick={toggleHideConfirm}>
                 {hideConfirm ? <VisibilityOff /> : <Visibility />}
               </IconButton>
-            </InputAdornment>} />
-        <FormHelperText color='secondary'>{cError || ' '}</FormHelperText>
+            </InputAdornment>
+          )}
+        />
+        <FormHelperText color="secondary">{cError || ' '}</FormHelperText>
       </FormControl>
 
-      <br /><br />
+      <br />
+      <br />
 
       <Button
-        className='button'
+        type="submit"
+        className="button"
         variant={signupHover ? 'contained' : 'outlined'}
-        color='primary'
+        color="primary"
         onClick={handleSignupClick}
         onMouseEnter={() => toggleSignupHover('enter')}
-        onMouseLeave={() => toggleSignupHover('leave')}>
+        onMouseLeave={() => toggleSignupHover('leave')}
+      >
         Sign up
       </Button>
 
-      <br /><br />
+      <br />
+      <br />
 
       <Button
-        className='button'
+        className="button"
         variant={loginHover ? 'outlined' : ''}
-        color='primary'
-        onClick={ () => navigate('/login') }
+        color="primary"
+        onClick={() => navigate('/login')}
         onMouseEnter={() => toggleLoginHover('enter')}
-        onMouseLeave={() => toggleLoginHover('leave')}>
+        onMouseLeave={() => toggleLoginHover('leave')}
+      >
         Login
       </Button>
     </div>
-  )
+  );
 }
 
 export default Signup;
