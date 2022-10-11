@@ -2,7 +2,7 @@ import { RequestHandler } from 'express';
 
 import User from '../models/userModel';
 import Item from '../models/itemModel';
-import { TypeItem } from '../constants/modelTypes';
+import type { TypeItem } from '../constants/modelTypes';
 
 /**
  * Get's all user's items
