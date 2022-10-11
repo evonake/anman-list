@@ -1,5 +1,8 @@
 node_modules
+build
 
-.eslintrc.json
-.pretierrc
 .env
+.eslintrc.json
+.vscode
+.DS_Store
+.gitattributes
