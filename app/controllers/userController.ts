@@ -12,6 +12,7 @@ export const login: RequestHandler = async (req, res, next) => {
 
   if (!username) {
     res.status(400).json({
+      success: false,
       type: 'username',
       message: 'Username is required.',
     });
@@ -19,6 +20,7 @@ export const login: RequestHandler = async (req, res, next) => {
   }
   if (!password) {
     res.status(400).json({
+      success: false,
       type: 'password',
       message: 'Password is required.',
     });
@@ -28,6 +30,7 @@ export const login: RequestHandler = async (req, res, next) => {
   passport.authenticate('local', (err, user, info) => {
     if (err) {
       res.status(500).json({
+        success: false,
         type: 'server',
         message: 'Server error.',
       });
@@ -35,6 +38,7 @@ export const login: RequestHandler = async (req, res, next) => {
     }
     if (!user) {
       res.status(400).json({
+        success: false,
         type: 'login',
         message: info.message,
       });
@@ -44,6 +48,7 @@ export const login: RequestHandler = async (req, res, next) => {
     req.login(user, (errLogin) => {
       if (errLogin) {
         res.status(500).json({
+          success: false,
           type: 'server',
           message: 'Server error.',
         });
@@ -62,6 +67,7 @@ export const register: RequestHandler = async (req, res) => {
   // vaildate inputs
   if (!username) {
     res.status(400).json({
+      success: false,
       type: 'username',
       message: 'Username is required.',
     });
@@ -69,6 +75,7 @@ export const register: RequestHandler = async (req, res) => {
   }
   if (!password) {
     res.status(400).json({
+      success: false,
       type: 'password',
       message: 'Password is required.',
     });
@@ -78,6 +85,7 @@ export const register: RequestHandler = async (req, res) => {
   const userExists = await User.exists({ username });
   if (userExists) {
     res.status(400).json({
+      success: false,
       type: 'username',
       message: 'Username already exists.',
     });
@@ -95,10 +103,14 @@ export const register: RequestHandler = async (req, res) => {
   });
 };
 
-export const logout: RequestHandler = async (req, res, next) => {
+export const logout: RequestHandler = async (req, res) => {
   req.logout((err) => {
     if (err) {
-      return next(err);
+      res.status(500).json({
+        success: false,
+        type: 'server',
+        message: 'Server error.',
+      });
     }
     res.status(200).json({
       success: true,

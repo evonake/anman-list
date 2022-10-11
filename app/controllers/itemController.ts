@@ -16,6 +16,7 @@ export const getItems: RequestHandler = async (req, res) => {
   const user = await User.findById(_id);
   if (!user) {
     res.status(400).json({
+      success: false,
       type: 'username',
       message: 'Username does not exist.',
     });
@@ -44,6 +45,7 @@ export const addItem: RequestHandler = async (req, res) => {
 
   if (!item || (item as TypeItem).title === undefined) {
     res.status(400).json({
+      success: false,
       type: 'item',
       message: 'Invalid item.',
     });
@@ -53,6 +55,7 @@ export const addItem: RequestHandler = async (req, res) => {
   const user = await User.findById(_id);
   if (!user) {
     res.status(400).json({
+      success: false,
       type: 'username',
       message: 'Username does not exist.',
     });
@@ -82,6 +85,7 @@ export const deleteItem: RequestHandler = async (req, res) => {
 
   if (!itemId) {
     res.status(400).json({
+      success: false,
       type: 'itemId',
       message: 'Item id is required.',
     });
@@ -92,6 +96,7 @@ export const deleteItem: RequestHandler = async (req, res) => {
   const user = await User.findById(_id);
   if (!user) {
     res.status(400).json({
+      success: false,
       type: 'username',
       message: 'Username does not exist.',
     });
@@ -122,6 +127,7 @@ export const updateItem: RequestHandler = async (req, res) => {
 
   if (!item) {
     res.status(400).json({
+      success: false,
       type: 'item',
       message: 'Item is required.',
     });
@@ -131,6 +137,7 @@ export const updateItem: RequestHandler = async (req, res) => {
   const user = await User.findById(_id);
   if (!user) {
     res.status(400).json({
+      success: false,
       type: 'username',
       message: 'Username does not exist.',
     });
@@ -139,6 +146,7 @@ export const updateItem: RequestHandler = async (req, res) => {
 
   if (!user.itemIds.includes(item._id)) {
     res.status(400).json({
+      success: false,
       type: 'item',
       message: 'Item does not exist.',
     });
