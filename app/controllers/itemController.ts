@@ -74,7 +74,7 @@ export const addItem: RequestHandler = async (req, res) => {
 /**
  * Deletes an item from a user's list
  * @route DELETE /items
- * @param {ObjectId} req.body.itemId - id of item to delete
+ * @param {String} req.body.itemId - id of item to delete
  * @returns {Object} 200 - success message
  * @returns {Error}  400 - Invalid username
  * @returns {Error}  400 - Invalid item id
