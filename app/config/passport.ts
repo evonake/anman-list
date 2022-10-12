@@ -14,7 +14,7 @@ declare global {
 
 function initPassport() {
   passport.use(new LocalStrategy.Strategy(async (username, password, callback) => {
-    const user = await User.findOne({ username });
+    const user = await User.findOne({ username }).select('username password');
     if (!user) {
       return callback(null, false, { message: 'Username does not exist.' });
     }
@@ -33,7 +33,7 @@ function initPassport() {
   });
 
   passport.deserializeUser(async (_id, callback) => {
-    const user = await User.findById(_id);
+    const user = await User.findById(_id).select('username password');
     callback(null, user);
   });
 }
