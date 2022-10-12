@@ -11,7 +11,6 @@ import * as USER_HANDLERS from './handlers/userHandlers';
 
 axios.defaults.withCredentials = true;
 axios.defaults.validateStatus = () => true;
-// TODO: make status 400 codes not throw errorc
 
 const handlers: { [key: string]: Handler } = {
   [ITEM_EVENTS.ITEM_GET]: ITEM_HANDLERS.handleItemGet,
