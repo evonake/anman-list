@@ -39,7 +39,7 @@ export const login: RequestHandler = async (req, res, next) => {
     if (!user) {
       res.status(400).json({
         success: false,
-        type: 'login',
+        type: info.message.includes('Username') ? 'username' : 'password',
         message: info.message,
       });
       return;
