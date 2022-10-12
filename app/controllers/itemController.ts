@@ -1,4 +1,4 @@
-import { RequestHandler } from 'express';
+import type { RequestHandler } from 'express';
 
 import User from '../models/userModel';
 import Item from '../models/itemModel';
@@ -74,14 +74,14 @@ export const addItem: RequestHandler = async (req, res) => {
 /**
  * Deletes an item from a user's list
  * @route DELETE /items
- * @param {String} req.body.itemId - id of item to delete
+ * @param {String} req.query.itemId - id of item to delete
  * @returns {Object} 200 - success message
  * @returns {Error}  400 - Invalid username
  * @returns {Error}  400 - Invalid item id
  */
 export const deleteItem: RequestHandler = async (req, res) => {
   const { _id } = req.session.passport!.user;
-  const { itemId } = req.body;
+  const { itemId } = req.query;
 
   if (!itemId) {
     res.status(400).json({
