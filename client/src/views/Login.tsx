@@ -4,7 +4,7 @@ import { Card, CardContent, Divider } from '@mui/material';
 import LoginLabel from '../components/LoginLabel';
 import LoginForm from '../components/LoginForm';
 
-import '../styles/login.css';
+import '../styles/views/login.css';
 
 type Props = {
   setView: React.Dispatch<React.SetStateAction<string>>;
