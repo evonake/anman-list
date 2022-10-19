@@ -6,7 +6,8 @@
 }
 
 /* card */
-.MuiCard-root {
+#register-card,
+#login-card {
   height: 60vh;
   width: 60vw;
   display: flex;
@@ -16,8 +17,10 @@
   border-radius: 20px;
 }
 
-.MuiCardContent-root,
-.MuiCardContent-root:last-child {
+#login-card-content,
+#login-card-content:last-child,
+#register-card-content,
+#register-card-content:last-child {
   height: 100%;
   width: 100%;
   padding: 0;

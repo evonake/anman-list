@@ -1,0 +1,10 @@
+.item {
+  height: 400px;
+  width: 50vw;
+  min-width: 300px;
+  padding: 10px;
+}
+
+.item-card {
+  border-radius: 10px;
+}

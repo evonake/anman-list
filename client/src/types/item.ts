@@ -2,7 +2,7 @@ type TypeItem = {
   _id: string;
   title: string;
   link?: string;
-  tracker: Map<string, number>;
+  tracker: { [key: string]: number };
   status?: 'ongoing' | 'completed' | 'dropped';
 };
 

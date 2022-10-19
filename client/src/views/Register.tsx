@@ -12,8 +12,8 @@ type Props = {
 function Register({ setView }: Props) {
   return (
     <div id="register-container">
-      <Card variant="outlined">
-        <CardContent>
+      <Card id="register-card" variant="outlined">
+        <CardContent id="register-card-content">
           <RegisterLabel className="split left" />
           <Divider flexItem variant="middle" orientation="vertical" />
           <RegisterForm className="split right" setView={setView} />

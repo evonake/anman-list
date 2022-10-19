@@ -12,8 +12,8 @@ type Props = {
 function Login({ setView }: Props) {
   return (
     <div id="login-container">
-      <Card variant="outlined">
-        <CardContent>
+      <Card id="login-card" variant="outlined">
+        <CardContent id="login-card-content">
           <LoginLabel className="split left" />
           <Divider flexItem variant="middle" orientation="vertical" />
           <LoginForm className="split right" setView={setView} />
