@@ -1,18 +1,13 @@
 import React from 'react';
+// import { isMobile } from 'react-device-detect';
 
-import { useAppDispatch } from './redux/hooks';
-
-import { itemGet } from './redux/constants/actionCreators/itemActions';
-import { userLogin } from './redux/constants/actionCreators/userActions';
+import Mobile from './layouts/Mobile';
+import Desktop from './layouts/Desktop';
 
 function App() {
-  const dispatch = useAppDispatch();
-
   return (
-    <section className="App">
-      <h1>Anman List</h1>
-      <button type="button" onClick={() => dispatch(userLogin('george', 'password'))}>Login</button>
-      <button type="button" onClick={() => dispatch(itemGet())}>Get Items</button>
+    <section className="app">
+      {false ? <Mobile /> : <Desktop />}
     </section>
   );
 }

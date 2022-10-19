@@ -1,0 +1,15 @@
+#registerform-container,
+#loginform-container {
+  height: 100%;
+  direction: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+.input {
+  width: 80%
+}
+
+.submit-button {
+  width: 50%
+}

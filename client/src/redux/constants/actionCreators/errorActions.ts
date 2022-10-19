@@ -1,9 +1,11 @@
 import type TypeError from '../../../types/error';
-import ERROR_SET from '../actionNames/errorEvents';
+import { ERROR_SET, ERROR_RESET } from '../actionNames/errorEvents';
 
-const errorSet = (error: TypeError) => ({
+export const errorSet = (error: TypeError) => ({
   type: ERROR_SET,
   payload: error,
 });
 
-export default errorSet;
+export const errorReset = () => ({
+  type: ERROR_RESET,
+});

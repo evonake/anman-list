@@ -4,7 +4,7 @@ import axios from 'axios';
 import type Handler from './handler';
 
 import { userSet } from '../../constants/actionCreators/userActions';
-import errorSet from '../../constants/actionCreators/errorActions';
+import { errorSet, errorReset } from '../../constants/actionCreators/errorActions';
 
 export const handleUserLogin: Handler = async ({ dispatch, getState }, action) => {
   const { username, password } = action.payload;
@@ -14,9 +14,8 @@ export const handleUserLogin: Handler = async ({ dispatch, getState }, action) =
     password,
   });
 
-  console.log(res.data);
-
   if (res.data.success) {
+    dispatch(errorReset());
     dispatch(userSet(username));
   } else {
     const { type, message } = res.data;
@@ -33,6 +32,7 @@ export const handleUserRegister: Handler = async ({ dispatch, getState }, action
   });
 
   if (res.data.success) {
+    dispatch(errorReset());
     handleUserLogin({ dispatch, getState }, action);
   } else {
     const { type, message } = res.data;
@@ -44,6 +44,7 @@ export const handleUserLogout: Handler = async ({ dispatch, getState }, action) 
   const res = await axios.post('/users/logout');
 
   if (res.data.success) {
+    dispatch(errorReset());
     dispatch(userSet(''));
   } else {
     const { type, message } = res.data;
