@@ -1,76 +1,49 @@
-import React, { useEffect, useState } from 'react';
+import React from 'react';
 
 import { Stack, Button } from '@mui/material';
 
-import { useAppDispatch, useAppSelector } from '../redux/hooks';
+import { useAppDispatch } from '../redux/hooks';
 import { userLogin } from '../redux/constants/actionCreators/userActions';
-import { selectUsername } from '../redux/features/userSlice';
-import { selectError } from '../redux/features/errorSlice';
 
-import MyInput from './MyInput';
+import useInputWithErrors from '../hooks/inputWithErrors';
+
+import LoginInput from './LoginInput';
 
 import '../styles/components/loginform.css';
 
 type Props = {
   className?: string
-  setView: React.Dispatch<React.SetStateAction<string>>;
+  toRegister: () => void;
 };
 const defaultProps = {
   className: '',
 };
-type State = {
+type InputState = {
   username: string;
-  usernameError: string;
   password: string;
-  passwordError: string;
 };
-function LoginForm({ className, setView }: Props) {
+const initialInput: InputState = {
+  username: '',
+  password: '',
+};
+
+function LoginForm({ className, toRegister }: Props) {
   const dispatch = useAppDispatch();
 
-  const username = useAppSelector(selectUsername);
-  const error = useAppSelector(selectError);
-
-  const [values, setValues] = useState<State>({
-    username: '',
-    usernameError: '',
-    password: '',
-    passwordError: '',
-  });
-
-  const handleInputChange = (prop: keyof State) => (e: React.ChangeEvent<HTMLInputElement>) => {
-    e.preventDefault();
-
-    setValues({ ...values, [prop]: e.target.value });
-  };
+  const {
+    inputs,
+    handleInputChange,
+    errors,
+    validate,
+  } = useInputWithErrors<InputState>(initialInput);
 
   const handleSubmit = (e: React.MouseEvent<HTMLElement>) => {
     e.preventDefault();
 
-    if (!values.username) {
-      setValues({ ...values, usernameError: 'Username is required' });
-    } else if (!values.password) {
-      setValues({ ...values, passwordError: 'Password is required' });
-    } else {
-      dispatch(userLogin(values.username, values.password));
+    if (validate()) {
+      dispatch(userLogin(inputs.username, inputs.password));
     }
   };
-
-  useEffect(() => {
-    setValues({ ...values, usernameError: '' });
-  }, [values.username]);
-  useEffect(() => {
-    setValues({ ...values, passwordError: '' });
-  }, [values.password]);
-  useEffect(() => {
-    if (username) {
-      setView('home');
-    }
-  }, [username]);
-  useEffect(() => {
-    if (error.type) {
-      setValues({ ...values, [`${error.type}Error`]: error.message });
-    }
-  }, [error]);
 
   return (
     <div className={className}>
@@ -78,20 +51,20 @@ function LoginForm({ className, setView }: Props) {
         id="loginform-container"
         spacing={2}
       >
-        <MyInput
+        <LoginInput
           label="Username"
-          error={values.usernameError}
+          error={errors.username}
           onChange={handleInputChange('username')}
         >
-          {values.username}
-        </MyInput>
-        <MyInput
+          {inputs.username}
+        </LoginInput>
+        <LoginInput
           label="Password"
-          error={values.passwordError}
+          error={errors.password}
           onChange={handleInputChange('password')}
         >
-          {values.password}
-        </MyInput>
+          {inputs.password}
+        </LoginInput>
 
         <Button
           className="submit-button"
@@ -101,7 +74,7 @@ function LoginForm({ className, setView }: Props) {
         >
           Log In
         </Button>
-        <Button variant="text" onClick={() => setView('register')}>Register</Button>
+        <Button variant="text" onClick={toRegister}>Register</Button>
       </Stack>
     </div>
   );

@@ -25,7 +25,7 @@ const defaultProps = {
   type: 'text',
 };
 
-function MyInput({
+function LoginInput({
   label,
   error = '',
   onChange,
@@ -61,6 +61,6 @@ function MyInput({
     />
   );
 }
-MyInput.defaultProps = defaultProps;
+LoginInput.defaultProps = defaultProps;
 
-export default MyInput;
+export default LoginInput;

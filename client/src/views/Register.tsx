@@ -7,7 +7,7 @@ import RegisterForm from '../components/RegisterForm';
 import '../styles/views/login.css';
 
 type Props = {
-  setView: React.Dispatch<React.SetStateAction<string>>;
+  setView: (view: string) => void;
 };
 function Register({ setView }: Props) {
   return (
@@ -16,7 +16,7 @@ function Register({ setView }: Props) {
         <CardContent id="register-card-content">
           <RegisterLabel className="split left" />
           <Divider flexItem variant="middle" orientation="vertical" />
-          <RegisterForm className="split right" setView={setView} />
+          <RegisterForm className="split right" toLogin={() => setView('login')} />
         </CardContent>
       </Card>
     </div>
