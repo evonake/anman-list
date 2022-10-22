@@ -14,10 +14,10 @@ const ItemSchema = new mongoose.Schema<TypeItem>({
     trim: true,
     default: '',
   },
-  tracker: {
+  trackers: {
     type: Map,
     of: Number,
-    default: new Map([['page', 1]]),
+    default: new Map([['Page', 1]]),
     validate: (t: Map<string, number>) => t.size > 0,
   },
   status: {

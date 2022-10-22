@@ -14,6 +14,6 @@ export type TypeUser = mongoose.Document & {
 export type TypeItem = mongoose.Document & {
   title: string;
   link?: string;
-  tracker: Map<string, number>;
+  trackers: Map<string, number>;
   status?: 'ongoing' | 'completed' | 'dropped';
 };
