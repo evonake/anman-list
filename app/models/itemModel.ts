@@ -15,10 +15,9 @@ const ItemSchema = new mongoose.Schema<TypeItem>({
     default: '',
   },
   trackers: {
-    type: Map,
-    of: Number,
-    default: new Map([['Page', 1]]),
-    validate: (t: Map<string, number>) => t.size > 0,
+    type: [{ name: String, value: Number }],
+    default: [{ name: 'Page', value: 0 }],
+    minItems: 1,
   },
   status: {
     type: String,
