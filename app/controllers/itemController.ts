@@ -43,8 +43,6 @@ export const addItem: RequestHandler = async (req, res) => {
   const { _id } = req.session.passport!.user;
   const { item } = req.body;
 
-  console.log(item);
-
   if (!item || (item as TypeItem).title === undefined) {
     res.status(400).json({
       success: false,
