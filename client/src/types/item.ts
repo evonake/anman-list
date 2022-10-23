@@ -1,9 +1,11 @@
-type TypeItem = {
+export type TypeDBItem = {
   _id: string;
   title: string;
   link?: string;
-  tracker: { [key: string]: number };
+  trackers: { name: string; value: number }[];
   status?: 'ongoing' | 'completed' | 'dropped';
 };
+
+type TypeItem = Omit<TypeDBItem, '_id'>;
 
 export default TypeItem;

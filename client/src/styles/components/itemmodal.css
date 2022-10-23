@@ -1,0 +1,15 @@
+.item-modal {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  border: 1px solid #90CAF9;
+}
+
+.tracker>.name {
+  width: 70%
+}
+
+.tracker>.value {
+  width: 15%
+}

@@ -2,15 +2,15 @@ import { createSlice } from '@reduxjs/toolkit';
 import type { PayloadAction } from '@reduxjs/toolkit';
 
 import type { RootState } from '../store';
-import type TypeItem from '../../types/item';
+import type { TypeDBItem } from '../../types/item';
 
-const initialState: TypeItem[] = [];
+const initialState: TypeDBItem[] = [];
 
 export const itemsSlice = createSlice({
   name: 'items',
   initialState,
   reducers: {
-    set(state, action: PayloadAction<TypeItem[]>) {
+    set(state, action: PayloadAction<TypeDBItem[]>) {
       return action.payload;
     },
   },

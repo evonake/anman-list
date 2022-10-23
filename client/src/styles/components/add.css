@@ -1,0 +1,13 @@
+.add-item>.fab {
+  position: fixed;
+  bottom: 20px;
+  right: 20px;
+}
+
+.add-item-modal {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  border: 1px solid #90CAF9;
+}

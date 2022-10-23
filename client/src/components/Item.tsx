@@ -21,9 +21,11 @@ function Item({ itemData }: Props) {
   const {
     title,
     link,
-    tracker,
+    trackers,
     // status,
   } = itemData;
+
+  // TODO: add status to Item card
 
   return (
     <div className="item">
@@ -32,10 +34,10 @@ function Item({ itemData }: Props) {
           <Stack className="fill" direction="column" spacing={2} justifyContent="space-evenly">
             <h3>{title}</h3>
             <p>{link}</p>
-            {Object.keys(tracker).map((t) => (
-              <Stack direction="row" alignItems="center">
-                <p>{`${t}: `}</p>
-                <Tracker value={tracker[t]} />
+            {trackers.map((tracker) => (
+              <Stack direction="row" alignItems="center" key={tracker.name}>
+                <p>{`${tracker.name}: `}</p>
+                <TrackerWithArrows value={tracker.value} />
               </Stack>
             ))}
           </Stack>
@@ -45,7 +47,7 @@ function Item({ itemData }: Props) {
   );
 }
 
-function Tracker({ value }: { value: number }) {
+function TrackerWithArrows({ value }: { value: number }) {
   return (
     <Stack>
       <IconButton size="small" onClick={() => console.log('up')}>

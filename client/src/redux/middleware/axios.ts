@@ -19,6 +19,7 @@ const handlers: { [key: string]: Handler } = {
   [ITEM_EVENTS.ITEM_UPDATE]: ITEM_HANDLERS.handleItemUpdate,
   [USER_EVENTS.USER_LOGIN]: USER_HANDLERS.handleUserLogin,
   [USER_EVENTS.USER_REGISTER]: USER_HANDLERS.handleUserRegister,
+  // TODO: user logout
 };
 
 const axiosMiddleware: Middleware<{}, R> = ({ dispatch, getState }) => (next) => async (action) => {

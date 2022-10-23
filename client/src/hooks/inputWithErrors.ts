@@ -56,11 +56,16 @@ function useInputWithErrors<T extends MyObject>(
     return valid;
   };
 
+  const reset = () => {
+    setInputs(initialInputs);
+  };
+
   return {
     inputs,
     handleInputChange,
     errors,
     validate,
+    reset,
   };
 }
 

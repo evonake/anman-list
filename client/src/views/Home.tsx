@@ -1,12 +1,10 @@
 import React, { useEffect } from 'react';
 
-import { Fab } from '@mui/material';
-import AddIcon from '@mui/icons-material/Add';
-
 import { useAppDispatch } from '../redux/hooks';
 import { itemGet } from '../redux/constants/actionCreators/itemActions';
 
 import ItemList from '../components/ItemList';
+import AddItem from '../components/AddItem';
 
 import '../styles/views/home.css';
 
@@ -18,14 +16,10 @@ function Home() {
   }, []);
 
   return (
-    <div>
-      <div id="home">
-        <h1>Home</h1>
-        <ItemList />
-      </div>
-      <Fab className="add-fab">
-        <AddIcon />
-      </Fab>
+    <div id="home">
+      <h1>Home</h1>
+      <ItemList />
+      <AddItem />
     </div>
   );
 }
