@@ -31,7 +31,7 @@ function AddItem() {
       </Fab>
 
       <ItemModal
-        resetOnSubmit
+        add
         open={open}
         close={() => setOpen(false)}
         item={initialInput}

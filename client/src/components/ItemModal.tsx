@@ -27,16 +27,16 @@ import '../styles/components/itemmodal.css';
 
 type Input = Omit<TypeItem, 'trackers' | 'status'>;
 type Props = {
-  resetOnSubmit?: boolean;
+  add?: boolean;
   open: boolean;
   close: () => void;
   item: TypeItem;
 } & typeof defaultProps;
 const defaultProps = {
-  resetOnSubmit: false,
+  add: false,
 };
 function ItemModal({
-  resetOnSubmit = false,
+  add = false,
   open,
   close,
   item,
@@ -115,7 +115,7 @@ function ItemModal({
       dispatch(itemAdd(newItem));
       close();
 
-      if (resetOnSubmit) {
+      if (add) {
         resetInputs();
         setStatus('ongoing');
         setTrackersInput(item.trackers);
