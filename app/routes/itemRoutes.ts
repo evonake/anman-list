@@ -12,9 +12,7 @@ const router = express.Router();
 router.route('/')
   .get(getItems)
   .post(addItem)
-  .put(updateItem);
-
-router.route('/:itemId')
+  .put(updateItem)
   .delete(deleteItem);
 
 export default router;

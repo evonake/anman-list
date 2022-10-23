@@ -3,13 +3,37 @@
   top: 50%;
   left: 50%;
   transform: translate(-50%, -50%);
-  border: 1px solid #90CAF9;
+  height: 400px;
+  width: 70vw;
+  min-width: 600px;
+  padding: 10px;
+}
+
+.confirm-delete-modal {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  height: 200px;
+  width: 300px;
+  padding: 10px;
+  border: 1px solid var(--color-error)
+}
+
+.item-modal-content {
+  height: 65%;
+  padding: 5px 16px;
+}
+
+.tracker-list,
+.tracker {
+  align-items: center;
 }
 
 .tracker>.name {
-  width: 70%
+  width: 80%
 }
 
 .tracker>.value {
-  width: 15%
+  width: 20%
 }

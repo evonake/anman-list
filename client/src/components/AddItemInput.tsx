@@ -3,33 +3,45 @@ import React from 'react';
 import { TextField } from '@mui/material';
 
 type Props = React.PropsWithChildren & {
-  label: string;
+  key?: string;
+  className?: string;
+  required?: boolean;
+  type?: string;
+  label?: string;
   error?: string;
   onChange: (event: React.ChangeEvent<HTMLInputElement>) => void;
-  type?: string;
 } & typeof defaultProps;
 
 const defaultProps = {
-  error: '',
+  key: '',
+  className: 'input',
+  required: false,
   type: 'text',
+  label: '',
+  error: '',
 };
 
 function AddItemInput({
+  key,
+  className,
+  required,
+  type,
   label,
-  error = '',
+  error,
   onChange,
-  type = 'text',
   ...props
 }: Props) {
   const value = props.children;
 
   return (
     <TextField
-      className="input"
+      key={key}
+      className={className}
       variant="standard"
+      required={required}
       type={type}
-      error={!!error}
       label={label}
+      error={!!error}
       value={value}
       helperText={error || ' '}
       onChange={onChange}

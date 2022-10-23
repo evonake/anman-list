@@ -1,3 +1,10 @@
+:root {
+  --color-error: #F44336;
+  --color-primary: #90CAF9;
+  --color-success: #66BB6A;
+  --color-warning: #FFA726;
+}
+
 html,
 body,
 #root,
@@ -6,8 +13,15 @@ body,
   height: 100%
 }
 
+.input {
+  width: 80%
+}
 
 .fill {
   height: 100%;
+  width: 100%;
+}
+
+.fill-width {
   width: 100%;
 }

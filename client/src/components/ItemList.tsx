@@ -11,7 +11,7 @@ function ItemList() {
   const items = useAppSelector(selectItem);
 
   return (
-    <Stack>
+    <Stack spacing={2}>
       {items.map((item) => (
         <Item itemData={item} key={item._id} />
       ))}

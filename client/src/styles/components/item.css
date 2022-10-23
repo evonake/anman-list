@@ -1,5 +1,6 @@
 .item {
-  height: 400px;
+  position: relative;
+  height: 300px;
   width: 50vw;
   min-width: 300px;
   padding: 10px;
@@ -7,4 +8,26 @@
 
 .item-card {
   border-radius: 10px;
+}
+
+.item-content {
+  height: 85%;
+}
+
+.item-actions {
+  position: absolute;
+  right: 10px;
+  bottom: 10px;
+}
+
+.ongoing {
+  border: 1px solid var(--color-primary);
+}
+
+.completed {
+  border: 1px solid var(--color-success);
+}
+
+.dropped {
+  border: 1px solid var(--color-warning)
 }

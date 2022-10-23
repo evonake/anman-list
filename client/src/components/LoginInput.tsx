@@ -29,9 +29,9 @@ const defaultProps = {
 
 function LoginInput({
   label,
-  error = '',
+  error,
   onChange,
-  type = 'text',
+  type,
   ...props
 }: Props) {
   const [hidePassword, setHidePassword] = useState(true);
@@ -51,6 +51,7 @@ function LoginInput({
     <TextField
       className="input"
       variant="standard"
+      autoFocus={label === 'Username'}
       type={isPasswordType ? (hidePassword ? 'password' : 'text') : type}
       error={!!error}
       label={label}
