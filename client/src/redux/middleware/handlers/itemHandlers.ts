@@ -19,7 +19,7 @@ export const handleItemGet: Handler = async ({ dispatch, getState }, action) => 
 };
 
 export const handleItemAdd: Handler = async ({ dispatch, getState }, action) => {
-  const res = await axios.post('/', { item: action.payload.item });
+  const res = await axios.post('/items', { item: action.payload.item });
 
   if (res.data.success) {
     dispatch(errorReset());
@@ -31,7 +31,7 @@ export const handleItemAdd: Handler = async ({ dispatch, getState }, action) => 
 };
 
 export const handleItemDelete: Handler = async ({ dispatch, getState }, action) => {
-  const res = await axios.delete(`/${action.payload.itemId}`);
+  const res = await axios.delete(`/items/${action.payload.itemId}`);
 
   if (res.data.success) {
     dispatch(errorReset());
@@ -43,7 +43,7 @@ export const handleItemDelete: Handler = async ({ dispatch, getState }, action) 
 };
 
 export const handleItemUpdate: Handler = async ({ dispatch, getState }, action) => {
-  const res = await axios.put('/', { item: action.payload.item });
+  const res = await axios.put('/items', { item: action.payload.item });
 
   if (res.data.success) {
     dispatch(errorReset());

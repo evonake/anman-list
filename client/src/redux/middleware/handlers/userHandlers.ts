@@ -26,7 +26,7 @@ export const handleUserLogin: Handler = async ({ dispatch, getState }, action) =
 export const handleUserRegister: Handler = async ({ dispatch, getState }, action) => {
   const { username, password } = action.payload;
 
-  const res = await axios.post('/register', {
+  const res = await axios.post('/users/register', {
     username,
     password,
   });
