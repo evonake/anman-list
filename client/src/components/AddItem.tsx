@@ -11,10 +11,6 @@ import ItemModal from './ItemModal';
 
 import '../styles/components/add.css';
 
-// TODO: use EditItem.tsx to create AddItem.tsx, passing in initialInput as prop
-//       AddItem.tsx should include the fixed FAB
-//       EditItem.tsx modal should not be open when AddItem.tsx is open (only 1 modal)
-
 const initialInput: TypeItem = {
   title: '',
   link: '',
@@ -28,11 +24,6 @@ const initialInput: TypeItem = {
 function AddItem() {
   const [open, setOpen] = useState(false);
 
-  const myClose = () => {
-    console.log(initialInput);
-    setOpen(false);
-  };
-
   return (
     <div className="add-item">
       <Fab className="fab" onClick={() => setOpen(true)}>
@@ -42,7 +33,7 @@ function AddItem() {
       <ItemModal
         resetOnSubmit
         open={open}
-        close={myClose}
+        close={() => setOpen(false)}
         item={initialInput}
       />
     </div>
