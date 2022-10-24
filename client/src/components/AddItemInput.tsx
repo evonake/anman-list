@@ -3,7 +3,6 @@ import React from 'react';
 import { TextField } from '@mui/material';
 
 type Props = React.PropsWithChildren & {
-  key?: string;
   className?: string;
   required?: boolean;
   type?: string;
@@ -13,7 +12,6 @@ type Props = React.PropsWithChildren & {
 } & typeof defaultProps;
 
 const defaultProps = {
-  key: '',
   className: 'input',
   required: false,
   type: 'text',
@@ -22,7 +20,6 @@ const defaultProps = {
 };
 
 function AddItemInput({
-  key,
   className,
   required,
   type,
@@ -35,7 +32,6 @@ function AddItemInput({
 
   return (
     <TextField
-      key={key}
       className={className}
       variant="standard"
       required={required}

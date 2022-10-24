@@ -13,7 +13,7 @@ function ItemList() {
   return (
     <Stack spacing={2}>
       {items.map((item) => (
-        <Item itemData={item} key={item._id} />
+        <Item item={item} key={item._id} />
       ))}
     </Stack>
   );

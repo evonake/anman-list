@@ -205,7 +205,7 @@ function ItemModal({
             </Stack>
           </CardContent>
 
-          <CardActions className="item-actions">
+          <CardActions className="item-modal-actions">
             <Stack className="fill-width" direction="row" justifyContent="flex-end" spacing={1}>
               {!add && (
                 <IconButton color="error" onClick={() => setConfirmDelete(true)}>
@@ -232,7 +232,7 @@ function ItemModal({
           >
             <Card className="confirm-delete-modal item-card">
               <CardHeader title="Are you sure you want to delete this item?" />
-              <CardActions className="item-actions">
+              <CardActions className="item-modal-actions">
                 <Stack className="fill-width" direction="row" justifyContent="flex-end" spacing={1}>
                   <Button variant="outlined" onClick={() => setConfirmDelete(false)} startIcon={<CloseIcon />}>
                     Cancel
@@ -268,12 +268,11 @@ function TrackersList({
 }: TrackersListProps) {
   return (
     <Stack className="tracker-list" direction="row" spacing={2} divider={<Divider orientation="vertical" flexItem />}>
-      <Typography variant="h6">Trackers: </Typography>
+      <Typography variant="body2">Trackers: </Typography>
       {trackers.map((tracker, i) => (
-        <Stack className="tracker" direction="row" spacing={2}>
+        <Stack className="tracker" key={`tracker${i}`} direction="row" spacing={2}>
           <AddItemInput
             required
-            key={`trackerName${i}`}
             className="name"
             label="Name"
             error={errors[i].name ? ' ' : ''}
@@ -283,7 +282,6 @@ function TrackersList({
           </AddItemInput>
           <AddItemInput
             required
-            key={`trackerValue${i}`}
             className="value"
             label="Value"
             error={errors[i].value ? ' ' : ''}

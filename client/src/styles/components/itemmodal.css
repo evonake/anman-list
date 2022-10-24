@@ -25,6 +25,12 @@
   padding: 5px 16px;
 }
 
+.item-modal-actions {
+  position: absolute;
+  right: 10px;
+  bottom: 10px;
+}
+
 .tracker-list,
 .tracker {
   align-items: center;
