@@ -23,7 +23,7 @@ export const getItems: RequestHandler = async (req, res) => {
     return;
   }
 
-  const items = await Item.find({ _id: { $in: user.itemIds } });
+  const items = await Item.find({ _id: { $in: user.itemIds } }).lean();
 
   res.status(200).json({
     success: true,
