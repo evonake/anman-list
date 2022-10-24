@@ -67,6 +67,12 @@ function ItemModal({
     initialTrackersErrors,
   );
 
+  const handleChangeStatus = (event: React.MouseEvent<HTMLElement>, newStatus: TypeItem['status']) => {
+    if (newStatus) {
+      setStatus(newStatus);
+    }
+  };
+
   const handleChangeTracker = (i: number, t: 'name' | 'value') => (e: React.ChangeEvent<HTMLInputElement>) => {
     // i: index of tracker in trackersInput
     e.preventDefault();
@@ -181,7 +187,7 @@ function ItemModal({
                   exclusive
                   size="small"
                   value={status}
-                  onChange={(_, s) => setStatus(s)}
+                  onChange={handleChangeStatus}
                 >
                   <ToggleButton value="ongoing">Ongoing</ToggleButton>
                   <ToggleButton value="completed">Completed</ToggleButton>
