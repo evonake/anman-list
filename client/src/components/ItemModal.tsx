@@ -41,7 +41,7 @@ const defaultProps = {
   add: false,
 };
 function ItemModal({
-  add = false,
+  add,
   open,
   close,
   item,

@@ -7,7 +7,6 @@ const ItemSchema = new mongoose.Schema<TypeItem>({
     type: String,
     trim: true,
     required: true,
-    immutable: true,
   },
   link: {
     type: String,
