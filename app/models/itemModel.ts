@@ -15,7 +15,7 @@ const ItemSchema = new mongoose.Schema<TypeItem>({
     default: '',
   },
   trackers: {
-    type: [{ name: String, value: Number }],
+    type: [new mongoose.Schema({ name: String, value: Number }, { _id: false })],
     default: [{ name: 'Page', value: 0 }],
     minItems: 1,
   },
