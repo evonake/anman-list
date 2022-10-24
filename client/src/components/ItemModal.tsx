@@ -46,6 +46,8 @@ function ItemModal({
   close,
   item,
 }: Props) {
+  console.log(item);
+
   const dispatch = useAppDispatch();
 
   const [confirmDelete, setConfirmDelete] = useState(false);
@@ -131,7 +133,7 @@ function ItemModal({
       } else {
         dispatch(itemUpdate(newItem));
       }
-      resetAndClose();
+      close();
     } else {
       setTrackersErrors(newTrackersErrors);
     }
@@ -139,13 +141,13 @@ function ItemModal({
 
   const handleDelete = () => {
     dispatch(itemDelete(item._id!));
-    resetAndClose();
+    close();
   };
 
   const resetAndClose = () => {
     close();
     resetInputs();
-    setStatus('ongoing');
+    setStatus(item.status);
     setConfirmDelete(false);
     setTrackersInput(item.trackers);
     setTrackersErrors(initialTrackersErrors);
