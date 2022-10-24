@@ -22,9 +22,9 @@ const handlers: { [key: string]: Handler } = {
   // TODO: user logout
 };
 
-const axiosMiddleware: Middleware<{}, R> = ({ dispatch, getState }) => (next) => async (action) => {
+const axiosMiddleware: Middleware<{}, R> = ({ dispatch }) => (next) => async (action) => {
   if (action.type in handlers) {
-    await handlers[action.type]({ dispatch, getState }, action);
+    await handlers[action.type](dispatch, action);
   }
   return next(action);
 };

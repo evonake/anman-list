@@ -6,7 +6,7 @@ import Handler from './handler';
 import { itemsSet } from '../../constants/actionCreators/itemActions';
 import { errorSet, errorReset } from '../../constants/actionCreators/errorActions';
 
-export const handleItemGet: Handler = async ({ dispatch, getState }, action) => {
+export const handleItemGet: Handler = async (dispatch, action) => {
   const res = await axios.get('/items');
 
   if (res.data.success) {
@@ -18,38 +18,36 @@ export const handleItemGet: Handler = async ({ dispatch, getState }, action) => 
   }
 };
 
-export const handleItemAdd: Handler = async ({ dispatch, getState }, action) => {
+export const handleItemAdd: Handler = async (dispatch, action) => {
   const res = await axios.post('/items', { item: action.payload.item });
 
   if (res.data.success) {
     dispatch(errorReset());
-    handleItemGet({ dispatch, getState }, action);
+    handleItemGet(dispatch, action);
   } else {
     const { type, message } = res.data;
     dispatch(errorSet({ type, message }));
   }
 };
 
-export const handleItemDelete: Handler = async ({ dispatch, getState }, action) => {
+export const handleItemDelete: Handler = async (dispatch, action) => {
   const res = await axios.delete('/items/', { params: { itemId: action.payload.itemId } });
 
   if (res.data.success) {
     dispatch(errorReset());
-    handleItemGet({ dispatch, getState }, action);
+    handleItemGet(dispatch, action);
   } else {
     const { type, message } = res.data;
     dispatch(errorSet({ type, message }));
   }
 };
 
-export const handleItemUpdate: Handler = async ({ dispatch, getState }, action) => {
-  console.log(action.payload.item);
-
+export const handleItemUpdate: Handler = async (dispatch, action) => {
   const res = await axios.put('/items', { item: action.payload.item });
 
   if (res.data.success) {
     dispatch(errorReset());
-    handleItemGet({ dispatch, getState }, action);
+    handleItemGet(dispatch, action);
   } else {
     const { type, message } = res.data;
     dispatch(errorSet({ type, message }));
