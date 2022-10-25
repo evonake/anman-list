@@ -15,9 +15,11 @@ import itemRoutes from './routes/itemRoutes';
 // add typing for req.session
 declare module 'express-session' {
   interface SessionData {
-    passport: { user: {
-      _id: string;
-    } };
+    passport: {
+      user: {
+        _id: string;
+      }
+    };
   }
 }
 declare module 'passport' {
