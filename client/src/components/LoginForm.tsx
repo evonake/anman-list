@@ -37,14 +37,16 @@ function LoginForm({ className, toRegister }: Props) {
     validate,
   } = useInputWithErrors<InputState>(initialInput);
 
-  const handleSubmit = () => {
+  const handleSubmit = (e: React.FormEvent<HTMLElement>) => {
+    e.preventDefault();
+
     if (validate()) {
       dispatch(userLogin(inputs.username, inputs.password));
     }
   };
 
   return (
-    <div className={className}>
+    <form className={className} onSubmit={handleSubmit}>
       <Stack
         id="loginform-container"
         spacing={2}
@@ -66,14 +68,14 @@ function LoginForm({ className, toRegister }: Props) {
 
         <Button
           className="submit-button"
+          type="submit"
           variant="contained"
-          onClick={handleSubmit}
         >
           Log In
         </Button>
         <Button variant="text" onClick={toRegister}>Register</Button>
       </Stack>
-    </div>
+    </form>
   );
 }
 LoginForm.defaultProps = defaultProps;

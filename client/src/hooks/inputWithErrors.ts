@@ -38,13 +38,18 @@ function useInputWithErrors<T extends MyObject>(
     setInputs({ ...inputs, [prop]: e.target.value });
   };
 
+  const setError = (prop: keyof E, message: string) => {
+    setErrors({ ...errors, [prop]: message });
+  };
+
   const validate = () => {
     let valid = true;
     const errorsCopy = { ...errors };
 
     Object.keys(inputs).forEach((key: keyof T) => {
       if (!inputs[key] && !optionalInputs.includes(key)) {
-        errorsCopy[key] = 'This field is required!';
+        const capitalizedKey = String(key).charAt(0).toUpperCase() + String(key).slice(1);
+        errorsCopy[key] = `${capitalizedKey} is required!`;
         valid = false;
       }
     });
@@ -64,6 +69,7 @@ function useInputWithErrors<T extends MyObject>(
     inputs,
     handleInputChange,
     errors,
+    setError,
     validate,
     reset,
   };

@@ -35,17 +35,24 @@ function RegisterForm({ className, toLogin }: Props) {
     inputs,
     handleInputChange,
     errors,
+    setError,
     validate,
-  } = useInputWithErrors<InputState>(initialInput, ['confirm']);
+  } = useInputWithErrors<InputState>(initialInput);
 
-  const handleSubmit = () => {
+  const handleSubmit = (e: React.FormEvent<HTMLElement>) => {
+    e.preventDefault();
+
     if (validate()) {
-      dispatch(userRegister(inputs.username, inputs.password));
+      if (inputs.password !== inputs.confirm) {
+        setError('confirm', 'Passwords do not match');
+      } else {
+        dispatch(userRegister(inputs.username, inputs.password));
+      }
     }
   };
 
   return (
-    <div className={className}>
+    <form className={className} onSubmit={handleSubmit}>
       <Stack
         id="registerform-container"
         spacing={2}
@@ -74,14 +81,14 @@ function RegisterForm({ className, toLogin }: Props) {
 
         <Button
           className="submit-button"
+          type="submit"
           variant="contained"
-          onClick={handleSubmit}
         >
           Register
         </Button>
         <Button variant="text" onClick={toLogin}>Log In</Button>
       </Stack>
-    </div>
+    </form>
   );
 }
 RegisterForm.defaultProps = defaultProps;
