@@ -46,8 +46,6 @@ function ItemModal({
   close,
   item,
 }: Props) {
-  console.log(item);
-
   const dispatch = useAppDispatch();
 
   const [confirmDelete, setConfirmDelete] = useState(false);
