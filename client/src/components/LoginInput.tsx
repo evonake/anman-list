@@ -25,8 +25,6 @@ const defaultProps = {
   type: 'text',
 };
 
-// TODO: submit on enter
-
 function LoginInput({
   label,
   error,
