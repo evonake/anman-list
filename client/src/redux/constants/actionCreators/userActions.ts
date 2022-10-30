@@ -2,8 +2,9 @@ import {
   USER_LOGIN,
   USER_REGISTER,
   USER_LOGOUT,
+  USER_AUTH,
   USER_SET,
-} from '../actionNames/selfEvents';
+} from '../actionNames/userEvents';
 
 export const userLogin = (username: string, password: string) => ({
   type: USER_LOGIN,
@@ -23,6 +24,10 @@ export const userRegister = (username: string, password: string) => ({
 
 export const userLogout = () => ({
   type: USER_LOGOUT,
+});
+
+export const userAuth = () => ({
+  type: USER_AUTH,
 });
 
 export const userSet = (username: string) => ({

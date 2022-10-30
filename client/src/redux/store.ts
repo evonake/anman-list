@@ -2,12 +2,12 @@ import { combineReducers, configureStore } from '@reduxjs/toolkit';
 
 import axiosMiddleware from './middleware/axios';
 
-import selfReducer from './features/selfSlice';
+import userReducer from './features/userSlice';
 import itemsReducer from './features/itemsSlice';
 import errorReducer from './features/errorSlice';
 
 const rootReducer = combineReducers({
-  self: selfReducer,
+  user: userReducer,
   items: itemsReducer,
   error: errorReducer,
 });

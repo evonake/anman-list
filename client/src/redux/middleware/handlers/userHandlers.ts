@@ -3,7 +3,7 @@ import axios from 'axios';
 
 import type Handler from './handler';
 
-import { userSet } from '../../constants/actionCreators/selfActions';
+import { userSet } from '../../constants/actionCreators/userActions';
 import { errorSet, errorReset } from '../../constants/actionCreators/errorActions';
 
 export const handleUserLogin: Handler = async (dispatch, action) => {
@@ -49,5 +49,14 @@ export const handleUserLogout: Handler = async (dispatch, action) => {
   } else {
     const { type, message } = res.data;
     dispatch(errorSet({ type, message }));
+  }
+};
+
+export const handleUserAuth: Handler = async (dispatch, action) => {
+  const res = await axios.get('/users/auth');
+
+  if (res.data.success) {
+    dispatch(errorReset());
+    dispatch(userSet(res.data.username));
   }
 };

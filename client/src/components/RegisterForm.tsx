@@ -3,7 +3,7 @@ import React from 'react';
 import { Stack, Button } from '@mui/material';
 
 import { useAppDispatch } from '../redux/hooks';
-import { userRegister } from '../redux/constants/actionCreators/selfActions';
+import { userRegister } from '../redux/constants/actionCreators/userActions';
 
 import useInputWithErrors from '../hooks/inputWithErrors';
 
@@ -38,9 +38,7 @@ function RegisterForm({ className, toLogin }: Props) {
     validate,
   } = useInputWithErrors<InputState>(initialInput, ['confirm']);
 
-  const handleSubmit = (e: React.MouseEvent<HTMLElement>) => {
-    e.preventDefault();
-
+  const handleSubmit = () => {
     if (validate()) {
       dispatch(userRegister(inputs.username, inputs.password));
     }
@@ -76,7 +74,6 @@ function RegisterForm({ className, toLogin }: Props) {
 
         <Button
           className="submit-button"
-          type="submit"
           variant="contained"
           onClick={handleSubmit}
         >

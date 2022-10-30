@@ -1,6 +1,6 @@
-type TypeSelf = {
+type TypeUser = {
   isLoggedIn: boolean;
   username: string;
 };
 
-export default TypeSelf;
+export default TypeUser;

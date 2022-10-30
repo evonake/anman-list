@@ -7,6 +7,7 @@ import ItemList from '../components/ItemList';
 import AddItem from '../components/AddItem';
 
 import '../styles/views/home.css';
+import LogoutButton from '../components/LogoutButton';
 
 function Home() {
   const dispatch = useAppDispatch();
@@ -18,6 +19,7 @@ function Home() {
   return (
     <div id="home">
       <h1>Home</h1>
+      <LogoutButton />
       <ItemList />
       <AddItem />
     </div>

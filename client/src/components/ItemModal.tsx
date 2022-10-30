@@ -75,7 +75,6 @@ function ItemModal({
 
   const handleChangeTracker = (i: number, t: 'name' | 'value') => (e: React.ChangeEvent<HTMLInputElement>) => {
     // i: index of tracker in trackersInput
-    e.preventDefault();
 
     // eslint-disable-next-line no-restricted-globals
     if (t === 'value' && isNaN(Number(e.target.value))) {
@@ -101,9 +100,7 @@ function ItemModal({
     setTrackersErrors(trackersErrors.filter((_, j) => i !== j));
   };
 
-  const handleSubmit = (e: React.MouseEvent<HTMLElement>) => {
-    e.preventDefault();
-
+  const handleSubmit = () => {
     let valid = validate();
     const newTrackersErrors = [...trackersErrors];
 

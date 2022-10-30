@@ -2,7 +2,7 @@ import React, { useEffect, useState } from 'react';
 
 import { useAppDispatch, useAppSelector } from '../redux/hooks';
 import { errorReset } from '../redux/constants/actionCreators/errorActions';
-import { selectIsLoggedIn } from '../redux/features/selfSlice';
+import { selectIsLoggedIn } from '../redux/features/userSlice';
 
 import Login from '../views/Login';
 import Register from '../views/Register';
@@ -23,6 +23,8 @@ function Desktop() {
   useEffect(() => {
     if (isLoggedIn) {
       setView('home');
+    } else {
+      setView('login');
     }
   }, [isLoggedIn]);
 

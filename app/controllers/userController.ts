@@ -125,3 +125,18 @@ export const logout: RequestHandler = async (req, res) => {
     });
   });
 };
+
+export const auth: RequestHandler = async (req, res) => {
+  if (req.isAuthenticated()) {
+    res.status(200).json({
+      success: true,
+      username: req.session.passport!.user.username,
+    });
+  } else {
+    res.status(401).json({
+      success: false,
+      type: 'auth',
+      message: 'Not authenticated.',
+    });
+  }
+};
