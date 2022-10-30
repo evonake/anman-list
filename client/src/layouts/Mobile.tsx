@@ -1,5 +1,7 @@
 import React from 'react';
 
+// TODO: Add a mobile layout
+
 function Mobile() {
   return (
     <div>
