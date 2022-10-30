@@ -8,6 +8,13 @@ const SALT_ROUNDS = 12;
 
 // { withCredentials: true } for axios
 export const login: RequestHandler = async (req, res, next) => {
+  if (req.isAuthenticated()) {
+    return res.status(200).json({
+      success: true,
+      username: req.session.passport!.user.username,
+    });
+  }
+
   const { username, password } = req.body;
 
   if (!username) {
@@ -56,6 +63,7 @@ export const login: RequestHandler = async (req, res, next) => {
 
       res.status(200).json({
         success: true,
+        username,
       });
     });
   })(req, res, next);

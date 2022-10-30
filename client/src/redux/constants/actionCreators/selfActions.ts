@@ -3,7 +3,7 @@ import {
   USER_REGISTER,
   USER_LOGOUT,
   USER_SET,
-} from '../actionNames/userEvents';
+} from '../actionNames/selfEvents';
 
 export const userLogin = (username: string, password: string) => ({
   type: USER_LOGIN,
@@ -29,5 +29,6 @@ export const userSet = (username: string) => ({
   type: USER_SET,
   payload: {
     username,
+    isLoggedIn: Boolean(username),
   },
 });

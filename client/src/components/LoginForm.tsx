@@ -3,7 +3,7 @@ import React from 'react';
 import { Stack, Button } from '@mui/material';
 
 import { useAppDispatch } from '../redux/hooks';
-import { userLogin } from '../redux/constants/actionCreators/userActions';
+import { userLogin } from '../redux/constants/actionCreators/selfActions';
 
 import useInputWithErrors from '../hooks/inputWithErrors';
 

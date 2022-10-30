@@ -6,8 +6,8 @@ import type Handler from './handlers/handler';
 
 import * as ITEM_EVENTS from '../constants/actionNames/itemEvents';
 import * as ITEM_HANDLERS from './handlers/itemHandlers';
-import * as USER_EVENTS from '../constants/actionNames/userEvents';
-import * as USER_HANDLERS from './handlers/userHandlers';
+import * as USER_EVENTS from '../constants/actionNames/selfEvents';
+import * as USER_HANDLERS from './handlers/selfHandlers';
 
 axios.defaults.withCredentials = true;
 axios.defaults.validateStatus = () => true;

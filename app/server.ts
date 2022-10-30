@@ -12,12 +12,21 @@ import auth from './middleware/auth';
 import userRoutes from './routes/userRoutes';
 import itemRoutes from './routes/itemRoutes';
 
-// add typing for req.session
+// add typing for req.session <-- should move to server.d.ts
+declare global {
+  namespace Express {
+    interface User {
+      _id: string;
+      username: string;
+    }
+  }
+}
 declare module 'express-session' {
   interface SessionData {
     passport: {
       user: {
         _id: string;
+        username: string;
       }
     };
   }
