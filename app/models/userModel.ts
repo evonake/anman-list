@@ -1,5 +1,6 @@
 import mongoose from 'mongoose';
 
+import { defaultUser } from '../constants/modelTypes';
 import type { TypeUser } from '../constants/modelTypes';
 
 const UserSchema = new mongoose.Schema<TypeUser>({
@@ -16,9 +17,9 @@ const UserSchema = new mongoose.Schema<TypeUser>({
     required: true,
     select: false,
   },
-  itemIds: {
+  lists: {
     type: [mongoose.Schema.Types.ObjectId],
-    default: [],
+    default: defaultUser.lists,
   },
 });
 

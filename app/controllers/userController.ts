@@ -4,33 +4,30 @@ import bcrypt from 'bcrypt';
 
 import User from '../models/userModel';
 
+import resError from './misc';
+
 const SALT_ROUNDS = 12;
 
 // { withCredentials: true } for axios
+/**
+ * Login a user
+ * @route POST /users/login
+ * @param {string} req.body.username - username of user
+ * @param {string} req.body.password - password of user
+ * @returns {Object} 200 - success message with username
+ * @returns {Error}  400 - Invalid username
+ * @returns {Error}  400 - Invalid password
+ * @returns {Error}  500 - Server error
+ */
 export const login: RequestHandler = async (req, res, next) => {
-  if (req.isAuthenticated()) {
-    return res.status(200).json({
-      success: true,
-      username: req.session.passport!.user.username,
-    });
-  }
-
   const { username, password } = req.body;
 
   if (!username) {
-    res.status(400).json({
-      success: false,
-      type: 'username',
-      message: 'Username is required.',
-    });
+    resError(res, { type: 'username', message: 'Invalid username.' });
     return;
   }
   if (!password) {
-    res.status(400).json({
-      success: false,
-      type: 'password',
-      message: 'Password is required.',
-    });
+    resError(res, { type: 'password', message: 'Invalid password.' });
     return;
   }
 
@@ -38,14 +35,15 @@ export const login: RequestHandler = async (req, res, next) => {
     if (err) {
       res.status(500).json({
         success: false,
-        type: 'server',
-        message: 'Server error.',
+        error: {
+          type: 'server',
+          message: 'Server error.',
+        },
       });
       return;
     }
     if (!user) {
-      res.status(400).json({
-        success: false,
+      resError(res, {
         type: info.message.includes('Username') ? 'username' : 'password',
         message: info.message,
       });
@@ -56,8 +54,10 @@ export const login: RequestHandler = async (req, res, next) => {
       if (errLogin) {
         res.status(500).json({
           success: false,
-          type: 'server',
-          message: 'Server error.',
+          error: {
+            type: 'server',
+            message: 'Server error.',
+          },
         });
       }
 
@@ -69,39 +69,36 @@ export const login: RequestHandler = async (req, res, next) => {
   })(req, res, next);
 };
 
+/**
+ * Register a user
+ * @route POST /users/register
+ * @param {string} req.body.username - username of user
+ * @param {string} req.body.password - password of user
+ * @returns {Object} 200 - success message
+ * @returns {Error}  400 - Invalid username
+ * @returns {Error}  400 - Invalid password
+ */
 export const register: RequestHandler = async (req, res) => {
   const { username, password } = req.body;
 
   // vaildate inputs
   if (!username) {
-    res.status(400).json({
-      success: false,
-      type: 'username',
-      message: 'Username is required.',
-    });
+    resError(res, { type: 'username', message: 'Invalid username.' });
     return;
   }
   if (!password) {
-    res.status(400).json({
-      success: false,
-      type: 'password',
-      message: 'Password is required.',
-    });
+    resError(res, { type: 'password', message: 'Invalid password.' });
     return;
   }
 
   const userExists = await User.exists({ username });
   if (userExists) {
-    res.status(400).json({
-      success: false,
-      type: 'username',
-      message: 'Username already exists.',
-    });
+    resError(res, { type: 'username', message: 'Username already exists.' });
     return;
   }
 
   const hashedPassword = await bcrypt.hash(password, SALT_ROUNDS);
-  User.create({
+  await User.create({
     username,
     password: hashedPassword,
   });
@@ -111,13 +108,21 @@ export const register: RequestHandler = async (req, res) => {
   });
 };
 
+/**
+ * Logout a user and terminate session
+ * @route POST /users/logout
+ * @returns {Object} 200 - success message
+ * @returns {Error}  500 - Server error
+ */
 export const logout: RequestHandler = async (req, res) => {
   req.logout((err) => {
     if (err) {
       res.status(500).json({
         success: false,
-        type: 'server',
-        message: 'Server error.',
+        error: {
+          type: 'server',
+          message: 'Server error.',
+        },
       });
     }
     res.status(200).json({
@@ -126,6 +131,12 @@ export const logout: RequestHandler = async (req, res) => {
   });
 };
 
+/**
+ * Check if user is logged in
+ * @route GET /users/auth
+ * @returns {Object} 200 - success message with username
+ * @returns {Error}  401 - Not authenticated
+ */
 export const auth: RequestHandler = async (req, res) => {
   if (req.isAuthenticated()) {
     res.status(200).json({
@@ -135,8 +146,10 @@ export const auth: RequestHandler = async (req, res) => {
   } else {
     res.status(401).json({
       success: false,
-      type: 'auth',
-      message: 'Not authenticated.',
+      error: {
+        type: 'auth',
+        message: 'Not authenticated.',
+      },
     });
   }
 };

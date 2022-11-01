@@ -3,6 +3,7 @@ build
 
 .env
 .eslintrc.json
+tsconfig.eslint.json
 .vscode
 .DS_Store
 .gitattributes
