@@ -7,6 +7,7 @@ import {
   deleteItem,
 } from '../controllers/itemController';
 import {
+  getItemList,
   addItemList,
   updateItemList,
   deleteItemList,
@@ -21,6 +22,7 @@ router.route('/')
   .delete(deleteItem);
 
 router.route('/lists')
+  .get(getItemList)
   .post(addItemList)
   .put(updateItemList)
   .delete(deleteItemList);

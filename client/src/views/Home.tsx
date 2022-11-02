@@ -1,7 +1,7 @@
 import React, { useEffect } from 'react';
 
-import { useAppDispatch } from '../redux/hooks';
-import { itemGet } from '../redux/constants/actionCreators/itemActions';
+import { useAppDispatch, useAppSelector } from '../redux/hooks';
+import { itemGetThunk, selectItemsLists } from '../redux/features/itemsListSlice';
 
 import ItemList from '../components/ItemList';
 import AddItem from '../components/AddItem';
@@ -12,15 +12,19 @@ import LogoutButton from '../components/LogoutButton';
 function Home() {
   const dispatch = useAppDispatch();
 
+  const itemLists = useAppSelector(selectItemsLists);
+
   useEffect(() => {
-    dispatch(itemGet());
+    dispatch(itemGetThunk());
   }, []);
 
   return (
     <div id="home">
       <h1>Home</h1>
       <LogoutButton />
-      <ItemList />
+      {itemLists.map((list) => (
+        <ItemList key={list._id} itemList={list} />
+      ))}
       <AddItem />
     </div>
   );

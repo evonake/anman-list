@@ -1,4 +1,4 @@
-type TypeItem = {
+export type TypeItem = {
   _id?: string;
   title: string;
   link?: string;
@@ -10,4 +10,12 @@ export type TypeDBItem = TypeItem & {
   _id: string;
 };
 
-export default TypeItem;
+export type TypeItemList = {
+  name: string;
+  trackerNames: string[];
+  items: TypeDBItem[];
+};
+
+export type TypeDBItemList = TypeItemList & {
+  _id: string;
+};

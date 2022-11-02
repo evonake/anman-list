@@ -21,9 +21,11 @@ import CheckIcon from '@mui/icons-material/Check';
 import DeleteIcon from '@mui/icons-material/Delete';
 
 import { useAppDispatch } from '../redux/hooks';
-import { itemAdd, itemDelete, itemUpdate } from '../redux/constants/actionCreators/itemActions';
+import {
+  itemAddThunk, itemUpdateThunk, itemDeleteThunk, selectItemsListsError,
+} from '../redux/features/itemsListSlice';
 
-import type TypeItem from '../types/item';
+import type { TypeItem, TypeDBItem } from '../types/item';
 
 import AddItemInput from './AddItemInput';
 import useInputWithErrors from '../hooks/inputWithErrors';
@@ -35,7 +37,7 @@ type Props = {
   add?: boolean;
   open: boolean;
   close: () => void;
-  item: TypeItem;
+  item: TypeItem | TypeDBItem;
 } & typeof defaultProps;
 const defaultProps = {
   add: false,
@@ -56,7 +58,7 @@ function ItemModal({
     errors,
     validate,
     reset: resetInputs,
-  } = useInputWithErrors<Input>({ title: item.title, link: item.link }, ['link']);
+  } = useInputWithErrors<Input>({ title: item.title, link: item.link }, selectItemsListsError, ['link']);
 
   const [status, setStatus] = useState<TypeItem['status']>(item.status);
 
@@ -124,9 +126,9 @@ function ItemModal({
       };
 
       if (add) {
-        dispatch(itemAdd(newItem));
+        dispatch(itemAddThunk({ item: newItem, itemListId: 'temp' }));
       } else {
-        dispatch(itemUpdate(newItem));
+        dispatch(itemUpdateThunk({ item: newItem as TypeDBItem, itemListId: 'temp' }));
       }
       close();
     } else {
@@ -135,7 +137,7 @@ function ItemModal({
   };
 
   const handleDelete = () => {
-    dispatch(itemDelete(item._id!));
+    dispatch(itemDeleteThunk(item._id!));
     close();
   };
 

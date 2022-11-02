@@ -3,7 +3,7 @@ import React from 'react';
 import { Stack, Button } from '@mui/material';
 
 import { useAppDispatch } from '../redux/hooks';
-import { userRegister } from '../redux/constants/actionCreators/userActions';
+import { registerThunk, selectUserError } from '../redux/features/userSlice';
 
 import useInputWithErrors from '../hooks/inputWithErrors';
 
@@ -37,7 +37,7 @@ function RegisterForm({ className, toLogin }: Props) {
     errors,
     setError,
     validate,
-  } = useInputWithErrors<InputState>(initialInput);
+  } = useInputWithErrors<InputState>(initialInput, selectUserError);
 
   const handleSubmit = (e: React.FormEvent<HTMLElement>) => {
     e.preventDefault();
@@ -46,7 +46,7 @@ function RegisterForm({ className, toLogin }: Props) {
       if (inputs.password !== inputs.confirm) {
         setError('confirm', 'Passwords do not match');
       } else {
-        dispatch(userRegister(inputs.username, inputs.password));
+        dispatch(registerThunk(inputs));
       }
     }
   };

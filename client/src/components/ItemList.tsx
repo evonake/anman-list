@@ -2,17 +2,17 @@ import React from 'react';
 
 import { Stack } from '@mui/material';
 
-import { useAppSelector } from '../redux/hooks';
-import { selectItem } from '../redux/features/itemsSlice';
-
 import Item from './Item';
+import { TypeDBItemList } from '../types/item';
 
-function ItemList() {
-  const items = useAppSelector(selectItem);
-
+type Props = {
+  itemList: TypeDBItemList
+};
+function ItemList({ itemList }: Props) {
   return (
+    // TODO: place to configure itemList settings (name, trackerNames)
     <Stack spacing={2}>
-      {items.map((item) => (
+      {itemList.items.map((item) => (
         <Item item={item} key={item._id} />
       ))}
     </Stack>

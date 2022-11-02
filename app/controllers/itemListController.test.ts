@@ -48,6 +48,66 @@ afterEach(async () => {
   }
 });
 
+describe('GET /items/lists', () => {
+  it('should return an array of item lists', async () => {
+    const myItem = {
+      name: sandbox.testName,
+    };
+
+    await request(app)
+      .post('/items/lists')
+      .set('Cookie', `connect.sid=${sandbox.token}`)
+      .send({
+        itemList: myItem,
+      });
+
+    const res0 = await request(app)
+      .get('/items')
+      .set('Cookie', `connect.sid=${sandbox.token}`);
+
+    const itemListId = findTestItemList(res0.body.itemLists)._id;
+
+    const res1 = await request(app)
+      .get('/items/lists')
+      .set('Cookie', `connect.sid=${sandbox.token}`)
+      .query({
+        itemListId,
+      })
+      .expect(200);
+
+    expect(res1.body.itemList).toEqual(
+      expect.objectContaining(myItem),
+    );
+  });
+
+  it('should not return an itemList if missing itemListId', async () => {
+    const res = await request(app)
+      .get('/items/lists')
+      .set('Cookie', `connect.sid=${sandbox.token}`)
+      .expect(400);
+
+    expect(res.body.error).toEqual({
+      type: 'itemListId',
+      message: 'Invalid item list id.',
+    });
+  });
+
+  it('should not return an itemList if invalid itemListId', async () => {
+    const res = await request(app)
+      .get('/items/lists')
+      .set('Cookie', `connect.sid=${sandbox.token}`)
+      .query({
+        itemListId: 'invalid',
+      })
+      .expect(400);
+
+    expect(res.body.error).toEqual({
+      type: 'itemList',
+      message: 'Item list does not exist.',
+    });
+  });
+});
+
 describe('POST /items/lists', () => {
   it('should add an itemList with defaults', async () => {
     const myItemList = {

@@ -10,8 +10,45 @@ import { defaultItemList, type TypeItemList } from '../constants/modelTypes';
 import resError from './misc';
 
 /**
+ * Gets an item list by id
+ * @route GET /items/lists
+ * @param {TypeItemList} req.query.itemListId - item list id to get
+ * @returns {Object} 200 - success message with itemList
+ * @returns {Error}  400 - Invalid username
+ * @returns {Error}  400 - Invalid item list
+ */
+export const getItemList: RequestHandler = async (req, res) => {
+  const { _id } = req.session.passport!.user;
+  const { itemListId } = req.query;
+
+  if (!itemListId || typeof itemListId !== 'string') {
+    resError(res, { type: 'itemListId', message: 'Invalid item list id.' });
+    return;
+  }
+
+  const user = await User.findById(_id);
+  if (!user) {
+    resError(res, { type: 'user', message: 'User does not exist.' });
+    return;
+  }
+  if (!user.lists.includes(itemListId as any)) {
+    resError(res, { type: 'itemList', message: 'Item list does not exist.' });
+    return;
+  }
+  const itemList = await ItemList.findById(itemListId);
+  if (!itemList) {
+    resError(res, { type: 'itemList', message: 'Item list does not exist.' });
+  }
+
+  res.status(200).json({
+    success: true,
+    itemList,
+  });
+};
+
+/**
  * Adds an item list to a user
- * @route POST /itemList
+ * @route POST /items/lists
  * @param {TypeItemList} req.body.itemList - item list to add
  * @returns {Object} 200 - success message
  * @returns {Error}  400 - Invalid username
@@ -43,7 +80,7 @@ export const addItemList: RequestHandler = async (req, res) => {
 
 /**
  * Updates a user's item list
- * @route PUT /itemList
+ * @route PUT /items/lists
  * @param {TypeItemList} req.body.itemList - item list to update
  * @returns {Object} 200 - success message
  * @returns {Error}  400 - Invalid username
@@ -77,7 +114,7 @@ export const updateItemList: RequestHandler = async (req, res) => {
 
 /**
  * Deletes an item list from a user
- * @route DELETE /itemList
+ * @route DELETE /items/lists
  * @param {string} req.params.id - id of item list to delete
  * @returns {Object} 200 - success message
  * @returns {Error}  400 - Invalid username
