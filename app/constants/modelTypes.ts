@@ -9,11 +9,6 @@ export const defaultUser = {
   lists: [],
 } as unknown as TypeUser;
 
-// TODO: create collections of items
-//       ie. "books", "movies", "games", etc.
-//       each collection would have a trackerType (ie. "page", "chapter", "episode")
-//       each item in the collection would inherit the trackerType
-
 export type TypeItemList = mongoose.Document & {
   name: string;
   trackerNames: string[];

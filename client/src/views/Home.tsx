@@ -18,6 +18,8 @@ function Home() {
     dispatch(itemGetThunk());
   }, []);
 
+  // TODO: Add a loading spinner (many places)
+  // TODO: Add a place to add a new itemList
   return (
     <div id="home">
       <h1>Home</h1>
