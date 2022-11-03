@@ -35,7 +35,7 @@ export const getItemList: RequestHandler = async (req, res) => {
     resError(res, { type: 'itemList', message: 'Item list does not exist.' });
     return;
   }
-  const itemList = await ItemList.findById(itemListId);
+  const itemList = await ItemList.findById(itemListId).populate('items').lean();
   if (!itemList) {
     resError(res, { type: 'itemList', message: 'Item list does not exist.' });
   }

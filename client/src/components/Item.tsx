@@ -18,7 +18,7 @@ import CloseIcon from '@mui/icons-material/Close';
 import type { TypeDBItem } from '../types/item';
 
 import { useAppDispatch } from '../redux/hooks';
-import { itemUpdateThunk } from '../redux/features/itemsListSlice';
+import { itemUpdateThunk } from '../redux/features/itemListsSlice';
 
 import ItemModal from './ItemModal';
 
@@ -60,7 +60,7 @@ function Item({ item }: Props) {
       trackers,
     };
 
-    dispatch(itemUpdateThunk({ item: newItem, itemListId: 'temp' }));
+    dispatch(itemUpdateThunk(newItem));
     setEdited(false);
   };
 

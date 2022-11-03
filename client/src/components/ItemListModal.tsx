@@ -8,8 +8,6 @@ import {
   CardActions,
   CardHeader,
   Modal,
-  ToggleButtonGroup,
-  ToggleButton,
   IconButton,
   Divider,
   Stack,
@@ -22,25 +20,25 @@ import DeleteIcon from '@mui/icons-material/Delete';
 
 import { useAppDispatch } from '../redux/hooks';
 import {
-  itemAddThunk,
-  itemUpdateThunk,
-  itemDeleteThunk,
+  itemListAddThunk,
+  itemListUpdateThunk,
+  itemListDeleteThunk,
   selectItemsListsError,
 } from '../redux/features/itemListsSlice';
 
-import type { TypeItem, TypeDBItem } from '../types/item';
+import type { TypeItemList, TypeDBItemList } from '../types/item';
 
 import AddItemInput from './AddItemInput';
 import useInputWithErrors from '../hooks/inputWithErrors';
 
-import '../styles/components/itemmodal.css';
+import '../styles/components/itemlistmodal.css';
 
-type Input = Omit<TypeItem, 'trackers' | 'status' | 'listId'>;
+type Input = Omit<TypeItemList, 'trackerNames'>;
 type Props = {
   add?: boolean;
   open: boolean;
   close: () => void;
-  item: TypeItem | TypeDBItem;
+  itemList: TypeItemList | TypeDBItemList;
 } & typeof defaultProps;
 const defaultProps = {
   add: false,
@@ -49,7 +47,7 @@ function ItemModal({
   add,
   open,
   close,
-  item,
+  itemList,
 }: Props) {
   const dispatch = useAppDispatch();
 
@@ -61,97 +59,70 @@ function ItemModal({
     errors,
     validate,
     reset: resetInputs,
-  } = useInputWithErrors<Input>({ title: item.title, link: item.link }, selectItemsListsError, ['link']);
+  } = useInputWithErrors<Input>({ name: itemList.name }, selectItemsListsError);
 
-  const [status, setStatus] = useState<TypeItem['status']>(item.status);
+  const [trackerNamesInputs, setTrackerNamesInputs] = useState<TypeItemList['trackerNames']>(itemList.trackerNames);
 
-  const [trackersInput, setTrackersInput] = useState<TypeItem['trackers']>(item.trackers);
+  const initialErrors = trackerNamesInputs.map(() => false);
+  const [trackerNamesErrors, setTrackerNamesErrors] = useState<boolean[]>(initialErrors);
 
-  const initialTrackersErrors = trackersInput.map(() => ({ name: false, value: false }));
-  const [trackersErrors, setTrackersErrors] = useState<{ name: boolean, value: boolean }[]>(
-    initialTrackersErrors,
-  );
+  const handleChangeTracker = (i: number) => (e: React.ChangeEvent<HTMLInputElement>) => {
+    setTrackerNamesInputs(trackerNamesInputs.map((n, j) => (i === j ? e.target.value : n)));
 
-  const handleChangeStatus = (newStatus: TypeItem['status']) => {
-    if (newStatus) {
-      setStatus(newStatus);
-    }
-  };
-
-  const handleChangeTracker = (i: number, t: 'name' | 'value') => (e: React.ChangeEvent<HTMLInputElement>) => {
-    // i: index of tracker in trackersInput
-
-    // eslint-disable-next-line no-restricted-globals
-    if (t === 'value' && isNaN(Number(e.target.value))) {
-      return;
-    }
-
-    const newTracker = { ...trackersInput[i], [t]: e.target.value };
-    const newTrackersNames = trackersInput.map((tracker, j) => (i === j ? newTracker : tracker));
-
-    setTrackersInput(newTrackersNames);
-
-    const newTrackerErrors = trackersErrors.map((error, j) => (i === j ? { ...error, [t]: '' } : error));
-    setTrackersErrors(newTrackerErrors);
+    setTrackerNamesErrors(trackerNamesInputs.map(() => false));
   };
 
   const handleAddTracker = () => {
-    setTrackersInput([...trackersInput, { name: '', value: 0 }]);
-    setTrackersErrors([...trackersErrors, { name: false, value: false }]);
+    setTrackerNamesInputs([...trackerNamesInputs, '']);
+    setTrackerNamesErrors([...trackerNamesErrors, false]);
   };
 
   const handleRemoveTracker = (i: number) => () => {
-    setTrackersInput(trackersInput.filter((_, j) => i !== j));
-    setTrackersErrors(trackersErrors.filter((_, j) => i !== j));
+    setTrackerNamesInputs(trackerNamesInputs.filter((_, j) => i !== j));
+    setTrackerNamesErrors(trackerNamesErrors.filter((_, j) => i !== j));
   };
 
   const handleSubmit = () => {
     let valid = validate();
-    const newTrackersErrors = [...trackersErrors];
+    const newTrackerNamesErrors = [...trackerNamesErrors];
 
-    trackersInput.forEach((tracker, i) => {
-      if (!tracker.name) {
-        newTrackersErrors[i].name = true;
-        valid = false;
-      }
-      if (!tracker.value && tracker.value !== 0) {
-        newTrackersErrors[i].value = true;
+    trackerNamesInputs.forEach((name, i) => {
+      if (!name) {
+        newTrackerNamesErrors[i] = true;
         valid = false;
       }
     });
 
     if (valid) {
-      const newItem = {
-        ...item,
+      const newItemList = {
+        ...itemList,
         ...inputs,
-        status,
-        trackers: trackersInput,
+        trackerNames: trackerNamesInputs,
       };
 
       if (add) {
-        dispatch(itemAddThunk(newItem));
+        dispatch(itemListAddThunk(newItemList));
         resetAndClose();
       } else {
-        dispatch(itemUpdateThunk(newItem as TypeDBItem));
+        dispatch(itemListUpdateThunk(newItemList as TypeDBItemList));
         close();
       }
     } else {
-      setTrackersErrors(newTrackersErrors);
+      setTrackerNamesErrors(newTrackerNamesErrors);
     }
   };
 
   const handleDelete = () => {
-    dispatch(itemDeleteThunk({ itemId: (item as TypeDBItem)._id, listId: item.listId }));
+    dispatch(itemListDeleteThunk((itemList as TypeDBItemList)._id));
     close();
   };
 
   const resetAndClose = () => {
     close();
     resetInputs();
-    setStatus(item.status);
     setConfirmDelete(false);
-    setTrackersInput(item.trackers);
-    setTrackersErrors(initialTrackersErrors);
+    setTrackerNamesInputs(itemList.trackerNames);
+    setTrackerNamesErrors(initialErrors);
   };
 
   return (
@@ -160,47 +131,23 @@ function ItemModal({
         open={open}
         onClose={close}
       >
-        <Card className={`item-modal item-card ${status}`}>
-          <CardHeader className="item-header" title={`${add ? 'Add' : 'Edit'} Item`} />
-          <CardContent className="item-modal-content">
+        <Card className="item-list-modal item-card">
+          <CardHeader className="item-header" title={`${add ? 'Add' : 'Edit'} Item List`} />
+          <CardContent className="item-list-modal-content">
             <Stack className="fill" justifyContent="space-between">
               <AddItemInput
                 required
                 className="fill-width"
-                label="Title"
-                error={errors.title}
-                onChange={handleInputChange('title')}
+                label="Name"
+                error={errors.name}
+                onChange={handleInputChange('name')}
               >
-                {inputs.title}
+                {inputs.name}
               </AddItemInput>
 
-              <Stack direction="row" spacing={2}>
-                <AddItemInput
-                  className="fill-width"
-                  label="Link"
-                  error={errors.link}
-                  onChange={handleInputChange('link')}
-                >
-                  {inputs.link}
-                </AddItemInput>
-
-                <Divider orientation="vertical" flexItem />
-
-                <ToggleButtonGroup
-                  exclusive
-                  size="small"
-                  value={status}
-                  onChange={(_, s) => handleChangeStatus(s)}
-                >
-                  <ToggleButton value="ongoing">Ongoing</ToggleButton>
-                  <ToggleButton value="completed">Completed</ToggleButton>
-                  <ToggleButton value="dropped">Dropped</ToggleButton>
-                </ToggleButtonGroup>
-              </Stack>
-
-              <TrackersList
-                trackers={trackersInput}
-                errors={trackersErrors}
+              <TrackerNamesList
+                trackerNames={trackerNamesInputs}
+                errors={trackerNamesErrors}
                 onChange={handleChangeTracker}
                 onRemove={handleRemoveTracker}
                 onAdd={handleAddTracker}
@@ -255,44 +202,35 @@ function ItemModal({
 }
 ItemModal.defaultProps = defaultProps;
 
-type TrackersListProps = {
-  trackers: TypeItem['trackers'];
-  errors: { name: boolean, value: boolean }[];
+type TrackerNamesListProps = {
+  trackerNames: TypeItemList['trackerNames'];
+  errors: boolean[];
   onChange: (i: number, t: 'name' | 'value') => (e: React.ChangeEvent<HTMLInputElement>) => void;
   onRemove: (i: number) => () => void;
   onAdd: () => void;
 };
-function TrackersList({
-  trackers,
+function TrackerNamesList({
+  trackerNames,
   errors,
   onChange,
   onRemove,
   onAdd,
-}: TrackersListProps) {
+}: TrackerNamesListProps) {
   return (
     <Stack className="tracker-list" direction="row" spacing={2} divider={<Divider orientation="vertical" flexItem />}>
-      <Typography variant="body2">Trackers: </Typography>
-      {trackers.map((tracker, i) => (
+      <Typography variant="body2">Tracker Names: </Typography>
+      {trackerNames.map((name, i) => (
         <Stack className="tracker" key={`tracker${i}`} direction="row" spacing={2}>
           <AddItemInput
             required
             className="name"
             label="Name"
-            error={errors[i].name ? ' ' : ''}
+            error={errors[i] ? ' ' : ''}
             onChange={onChange(i, 'name')}
           >
-            {tracker.name}
+            {name}
           </AddItemInput>
-          <AddItemInput
-            required
-            className="value"
-            label="Value"
-            error={errors[i].value ? ' ' : ''}
-            onChange={onChange(i, 'value')}
-          >
-            {tracker.value}
-          </AddItemInput>
-          {trackers.length > 1 && (
+          {trackerNames.length > 1 && (
             <IconButton onClick={onRemove(i)} style={{ height: 'max-content' }}>
               <CloseIcon />
             </IconButton>

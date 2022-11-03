@@ -56,24 +56,6 @@ afterAll(async () => {
   await mongoose.connection.close();
 });
 
-// clear test itemList after each test
-afterEach(async () => {
-  const res = await request(app)
-    .get('/items')
-    .set('Cookie', `connect.sid=${sandbox.token}`);
-
-  const itemList = findTestItemList(res.body.itemLists);
-  itemList.items.forEach(async (item: any) => {
-    await request(app)
-      .delete('/items')
-      .set('Cookie', `connect.sid=${sandbox.token}`)
-      .query({
-        itemListId: sandbox.itemListId,
-        itemId: item._id,
-      });
-  });
-});
-
 describe('GET /items', () => {
   it('should return an array with my itemList', async () => {
     const res = await request(app)
@@ -90,9 +72,28 @@ describe('GET /items', () => {
 });
 
 describe('POST /items', () => {
+  // clear test itemList after each test
+  afterEach(async () => {
+    const res = await request(app)
+      .get('/items')
+      .set('Cookie', `connect.sid=${sandbox.token}`);
+
+    const itemList = findTestItemList(res.body.itemLists);
+
+    itemList.items.forEach(async (item: any) => {
+      await request(app)
+        .delete('/items')
+        .set('Cookie', `connect.sid=${sandbox.token}`)
+        .query({
+          itemId: item._id,
+        });
+    });
+  });
+
   it('should add an item with defaults', async () => {
     const myItem = {
       title: 'test',
+      listId: sandbox.itemListId,
     };
     const expectedItem = {
       ...myItem,
@@ -105,7 +106,6 @@ describe('POST /items', () => {
       .post('/items')
       .set('Cookie', [`connect.sid=${sandbox.token}`])
       .send({
-        itemListId: sandbox.itemListId,
         item: myItem,
       })
       .expect(200);
@@ -136,6 +136,7 @@ describe('POST /items', () => {
         },
       ],
       status: 'completed',
+      listId: sandbox.itemListId,
     };
     const expectedItem = myItem;
 
@@ -143,7 +144,6 @@ describe('POST /items', () => {
       .post('/items')
       .set('Cookie', [`connect.sid=${sandbox.token}`])
       .send({
-        itemListId: sandbox.itemListId,
         item: myItem,
       })
       .expect(200);
@@ -159,7 +159,7 @@ describe('POST /items', () => {
     );
   });
 
-  it('should not add an item with missing itemListId', async () => {
+  it('should not add an item with missing listId', async () => {
     const myItem = {
       title: 'test',
     };
@@ -173,28 +173,28 @@ describe('POST /items', () => {
       .expect(400);
 
     expect(res.body.error).toEqual({
-      type: 'itemListId',
-      message: 'Invalid item list id.',
+      type: 'item',
+      message: 'Invalid item.',
     });
   });
 
-  it('should not add an item wiht an invalid itemListId', async () => {
+  it('should not add an item wiht an invalid listId', async () => {
     const myItem = {
       title: 'test',
+      listId: 'invalid-id',
     };
 
     const res = await request(app)
       .post('/items')
       .set('Cookie', [`connect.sid=${sandbox.token}`])
       .send({
-        itemListId: 'invalid',
         item: myItem,
       })
       .expect(400);
 
     expect(res.body.error).toEqual({
       type: 'itemListId',
-      message: 'Item list does not exist.',
+      message: 'Item list does not exist',
     });
   });
 
@@ -212,13 +212,13 @@ describe('POST /items', () => {
         },
       ],
       status: 'completed',
+      listId: sandbox.itemListId,
     };
 
     const res = await request(app)
       .post('/items')
       .set('Cookie', [`connect.sid=${sandbox.token}`])
       .send({
-        itemListId: sandbox.itemListId,
         item: myItem,
       })
       .expect(400);
@@ -231,6 +231,24 @@ describe('POST /items', () => {
 });
 
 describe('PUT /items', () => {
+  // clear test itemList after each test
+  afterEach(async () => {
+    const res = await request(app)
+      .get('/items')
+      .set('Cookie', `connect.sid=${sandbox.token}`);
+
+    const itemList = findTestItemList(res.body.itemLists);
+
+    itemList.items.forEach(async (item: any) => {
+      await request(app)
+        .delete('/items')
+        .set('Cookie', `connect.sid=${sandbox.token}`)
+        .query({
+          itemId: item._id,
+        });
+    });
+  });
+
   it('should update an item with new values', async () => {
     const myItem = {
       title: 'test',
@@ -246,8 +264,10 @@ describe('PUT /items', () => {
         },
       ],
       status: 'ongoing',
+      listId: sandbox.itemListId,
     };
     const updatedItem = {
+      ...myItem,
       title: 'updated-test',
       link: 'updated-test-link',
       trackers: [
@@ -268,7 +288,6 @@ describe('PUT /items', () => {
       .post('/items')
       .set('Cookie', [`connect.sid=${sandbox.token}`])
       .send({
-        itemListId: sandbox.itemListId,
         item: myItem,
       });
 
@@ -276,14 +295,15 @@ describe('PUT /items', () => {
       .get('/items')
       .set('Cookie', `connect.sid=${sandbox.token}`);
 
+    const itemId = findTestItemList(res0.body.itemLists).items[0]._id;
+
     await request(app)
       .put('/items')
       .set('Cookie', [`connect.sid=${sandbox.token}`])
       .send({
-        itemListId: sandbox.itemListId,
         item: {
           ...updatedItem,
-          _id: findTestItemList(res0.body.itemLists).items[0]._id,
+          _id: itemId,
         },
       })
       .expect(200);
@@ -314,9 +334,11 @@ describe('PUT /items', () => {
         },
       ],
       status: 'ongoing',
+      listId: sandbox.itemListId,
     };
     const updatedItem = {
       link: 'updated-test-link',
+      listId: sandbox.itemListId,
     };
     const expectedUpdatedItem = {
       ...myItem,
@@ -327,7 +349,6 @@ describe('PUT /items', () => {
       .post('/items')
       .set('Cookie', [`connect.sid=${sandbox.token}`])
       .send({
-        itemListId: sandbox.itemListId,
         item: myItem,
       });
 
@@ -335,14 +356,15 @@ describe('PUT /items', () => {
       .get('/items')
       .set('Cookie', `connect.sid=${sandbox.token}`);
 
+    const itemId = findTestItemList(res0.body.itemLists).items[0]._id;
+
     await request(app)
       .put('/items')
       .set('Cookie', [`connect.sid=${sandbox.token}`])
       .send({
-        itemListId: sandbox.itemListId,
         item: {
           ...updatedItem,
-          _id: findTestItemList(res0.body.itemLists).items[0]._id,
+          _id: itemId,
         },
       })
       .expect(200);
@@ -358,87 +380,51 @@ describe('PUT /items', () => {
     );
   });
 
-  it('should not update an item with missing itemListId', async () => {
+  it('should not update an item with missing listId', async () => {
     const myItem = {
+      _id: 'test-id',
       title: 'test',
     };
-    const updatedItem = {
-      title: 'updated-test',
-    };
-
-    await request(app)
-      .post('/items')
-      .set('Cookie', [`connect.sid=${sandbox.token}`])
-      .send({
-        itemListId: sandbox.itemListId,
-        item: myItem,
-      });
 
     const res = await request(app)
-      .get('/items')
-      .set('Cookie', `connect.sid=${sandbox.token}`);
-
-    const res1 = await request(app)
       .put('/items')
       .set('Cookie', [`connect.sid=${sandbox.token}`])
       .send({
-        item: {
-          ...updatedItem,
-          _id: findTestItemList(res.body.itemLists).items[0]._id,
-        },
+        item: myItem,
       })
       .expect(400);
 
-    expect(res1.body.error).toEqual({
-      type: 'itemListId',
-      message: 'Invalid item list id.',
+    expect(res.body.error).toEqual({
+      type: 'item',
+      message: 'Invalid item.',
     });
   });
 
   it('should not update an item with an invalid itemListId', async () => {
     const myItem = {
+      _id: 'test-id',
       title: 'test',
+      listId: 'invalid-id',
     };
-    const updatedItem = {
-      title: 'updated-test',
-    };
-
-    await request(app)
-      .post('/items')
-      .set('Cookie', [`connect.sid=${sandbox.token}`])
-      .send({
-        itemListId: sandbox.itemListId,
-        item: myItem,
-      });
 
     const res = await request(app)
-      .get('/items')
-      .set('Cookie', `connect.sid=${sandbox.token}`);
-
-    const res1 = await request(app)
       .put('/items')
       .set('Cookie', [`connect.sid=${sandbox.token}`])
       .send({
         itemListId: 'invalid',
-        item: {
-          ...updatedItem,
-          _id: findTestItemList(res.body.itemLists).items[0]._id,
-        },
+        item: myItem,
       })
       .expect(400);
 
-    expect(res1.body.error).toEqual({
-      type: 'itemListId',
-      message: 'Item list does not exist.',
+    expect(res.body.error).toEqual({
+      type: 'item',
+      message: 'Item does not exist.',
     });
   });
 
-  it('should not update an item with an missing itemId', async () => {
+  it('should not update an item with a missing itemId', async () => {
     const myItem = {
       title: 'test',
-    };
-    const updatedItem = {
-      title: 'updated-test',
     };
 
     await request(app)
@@ -454,9 +440,7 @@ describe('PUT /items', () => {
       .set('Cookie', [`connect.sid=${sandbox.token}`])
       .send({
         itemListId: sandbox.itemListId,
-        item: {
-          ...updatedItem,
-        },
+        item: myItem,
       })
       .expect(400);
 
@@ -469,16 +453,17 @@ describe('PUT /items', () => {
   it('should not update an item with an invalid itemId', async () => {
     const myItem = {
       title: 'test',
+      listId: sandbox.itemListId,
     };
     const updatedItem = {
       title: 'updated-test',
+      listId: sandbox.itemListId,
     };
 
     await request(app)
       .post('/items')
       .set('Cookie', [`connect.sid=${sandbox.token}`])
       .send({
-        itemListId: sandbox.itemListId,
         item: myItem,
       });
 
@@ -509,9 +494,9 @@ describe('DELETE /items', () => {
       .post('/items')
       .set('Cookie', [`connect.sid=${sandbox.token}`])
       .send({
-        itemListId: sandbox.itemListId,
         item: {
           title: 'test',
+          listId: sandbox.itemListId,
         },
       });
 
@@ -522,12 +507,11 @@ describe('DELETE /items', () => {
     itemId = findTestItemList(res.body.itemLists).items[0]._id;
   });
 
-  it('should add then delete an item', async () => {
+  it('should delete an item', async () => {
     await request(app)
       .delete('/items')
       .set('Cookie', [`connect.sid=${sandbox.token}`])
       .query({
-        itemListId: sandbox.itemListId,
         itemId,
       })
       .expect(200);
@@ -539,44 +523,10 @@ describe('DELETE /items', () => {
     expect(findTestItemList(res.body.itemLists).items).toHaveLength(0);
   });
 
-  it('should not delete an item with a missing itemListId', async () => {
-    const res = await request(app)
-      .delete('/items')
-      .set('Cookie', [`connect.sid=${sandbox.token}`])
-      .query({
-        itemId,
-      })
-      .expect(400);
-
-    expect(res.body.error).toEqual({
-      type: 'itemListId',
-      message: 'Invalid item list id.',
-    });
-  });
-
-  it('should not delete an item with an invalid itemListId', async () => {
-    const res = await request(app)
-      .delete('/items')
-      .set('Cookie', [`connect.sid=${sandbox.token}`])
-      .query({
-        itemListId: 'invalid',
-        itemId,
-      })
-      .expect(400);
-
-    expect(res.body.error).toEqual({
-      type: 'itemListId',
-      message: 'Item list does not exist.',
-    });
-  });
-
   it('should not delete an item with a missing itemId', async () => {
     const res0 = await request(app)
       .delete('/items')
       .set('Cookie', [`connect.sid=${sandbox.token}`])
-      .query({
-        itemListId: sandbox.itemListId,
-      })
       .expect(400);
 
     expect(res0.body.error).toEqual({
@@ -590,13 +540,12 @@ describe('DELETE /items', () => {
       .delete('/items')
       .set('Cookie', [`connect.sid=${sandbox.token}`])
       .query({
-        itemListId: sandbox.itemListId,
         itemId: 'invalid',
       })
       .expect(400);
 
     expect(res.body.error).toEqual({
-      type: 'itemId',
+      type: 'item',
       message: 'Item does not exist.',
     });
   });

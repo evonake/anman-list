@@ -1,13 +1,11 @@
 import { combineReducers, configureStore } from '@reduxjs/toolkit';
 
 import userReducer from './features/userSlice';
-import itemListsReducer from './features/itemsListSlice';
-import errorReducer from './features/errorSlice';
+import itemListsReducer from './features/itemListsSlice';
 
 const rootReducer = combineReducers({
   user: userReducer,
   itemLists: itemListsReducer,
-  error: errorReducer,
 });
 
 const store = configureStore({

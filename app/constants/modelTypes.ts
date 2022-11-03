@@ -24,6 +24,7 @@ export type TypeItem = mongoose.Document & {
   link: string;
   trackers: { name: string, value: number }[];
   status: 'ongoing' | 'completed' | 'dropped';
+  listId: ObjectId;
 };
 export const defaultItem = {
   link: '',

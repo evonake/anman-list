@@ -144,7 +144,7 @@ export const auth: RequestHandler = async (req, res) => {
       username: req.session.passport!.user.username,
     });
   } else {
-    res.status(401).json({
+    res.status(200).json({
       success: false,
       error: {
         type: 'auth',

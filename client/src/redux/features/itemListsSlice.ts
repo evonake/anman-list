@@ -57,7 +57,7 @@ export const itemListAddThunk = createAsyncThunk<any, TypeItemList, MyCreateAsyn
     if (!data.success) {
       return rejectWithValue({ error: data.error });
     }
-    return itemGetThunk();
+    return data;
   },
 );
 
@@ -69,7 +69,7 @@ export const itemListUpdateThunk = createAsyncThunk<any, TypeDBItemList, MyCreat
     if (!data.success) {
       return rejectWithValue({ error: data.error });
     }
-    return itemListGetThunk(itemList._id);
+    return data;
   },
 );
 
@@ -81,7 +81,7 @@ export const itemListDeleteThunk = createAsyncThunk<any, string, MyCreateAsyncTh
     if (!data.success) {
       return rejectWithValue({ error: data.error });
     }
-    return itemGetThunk();
+    return data;
   },
 );
 export const itemGetThunk = createAsyncThunk<any, void, MyCreateAsyncThunkOptions>(
@@ -96,49 +96,50 @@ export const itemGetThunk = createAsyncThunk<any, void, MyCreateAsyncThunkOption
   },
 );
 
-type ItemAddThunk = {
-  itemListId: string,
-  item: TypeItem,
-};
-export const itemAddThunk = createAsyncThunk<any, ItemAddThunk, MyCreateAsyncThunkOptions>(
+export const itemAddThunk = createAsyncThunk<any, TypeItem, MyCreateAsyncThunkOptions>(
   'items/add',
-  async ({ item, itemListId }, { rejectWithValue }) => {
+  async (item, { rejectWithValue }) => {
     const data = await handleItemAdd(item);
 
     if (!data.success) {
       return rejectWithValue({ error: data.error });
     }
-    return itemListGetThunk(itemListId);
+    return data;
   },
 );
 
-type ItemUpdateThunk = {
-  itemListId: string,
-  item: TypeDBItem,
-};
-export const itemUpdateThunk = createAsyncThunk<any, ItemUpdateThunk, MyCreateAsyncThunkOptions>(
+export const itemUpdateThunk = createAsyncThunk<any, TypeDBItem, MyCreateAsyncThunkOptions>(
   'items/update',
-  async ({ item, itemListId }, { rejectWithValue }) => {
+  async (item, { rejectWithValue }) => {
     const data = await handleItemUpdate(item);
 
     if (!data.success) {
       return rejectWithValue({ error: data.error });
     }
-    return itemListGetThunk(itemListId);
+    return data;
   },
 );
 
-export const itemDeleteThunk = createAsyncThunk<any, string, MyCreateAsyncThunkOptions>(
+type ItemDeleteThunk = {
+  itemId: string,
+  listId: string,
+};
+export const itemDeleteThunk = createAsyncThunk<any, ItemDeleteThunk, MyCreateAsyncThunkOptions>(
   'items/delete',
-  async (id: string, { rejectWithValue }) => {
-    const data = await handleItemDelete(id);
+  async ({ itemId, listId }, { rejectWithValue }) => {
+    const data = await handleItemDelete(itemId, listId);
 
     if (!data.success) {
       return rejectWithValue({ error: data.error });
     }
-    return itemGetThunk();
+    return data;
   },
 );
+
+const replaceOldList = (itemLists: TypeDBItemList[], newList: TypeDBItemList) => {
+  const oldIndex = itemLists.findIndex((iL) => iL._id === newList._id);
+  itemLists[oldIndex] = newList;
+};
 
 export const itemsListSlice = createSlice({
   name: 'itemLists',
@@ -147,8 +148,7 @@ export const itemsListSlice = createSlice({
   extraReducers: (builder) => {
     builder
       .addCase(itemListGetThunk.fulfilled, (state, action) => {
-        const oldIndex = state.itemLists.findIndex((iL) => iL._id === action.payload.itemList._id);
-        state.itemLists[oldIndex] = action.payload.itemList;
+        replaceOldList(state.itemLists, action.payload.itemList);
         state.reqStatus = 'fulfilled';
       })
       .addCase(itemListGetThunk.pending, (state) => {
@@ -158,7 +158,8 @@ export const itemsListSlice = createSlice({
         state.error = action.payload?.error || initialError;
         state.reqStatus = 'rejected';
       })
-      .addCase(itemListAddThunk.fulfilled, (state) => {
+      .addCase(itemListAddThunk.fulfilled, (state, action) => {
+        replaceOldList(state.itemLists, action.payload.itemList);
         state.error = initialError;
         state.reqStatus = 'fulfilled';
       })
@@ -169,7 +170,8 @@ export const itemsListSlice = createSlice({
         state.error = action.payload?.error || initialError;
         state.reqStatus = 'rejected';
       })
-      .addCase(itemListUpdateThunk.fulfilled, (state) => {
+      .addCase(itemListUpdateThunk.fulfilled, (state, action) => {
+        replaceOldList(state.itemLists, action.payload.itemList);
         state.error = initialError;
         state.reqStatus = 'fulfilled';
       })
@@ -180,7 +182,8 @@ export const itemsListSlice = createSlice({
         state.error = action.payload?.error || initialError;
         state.reqStatus = 'rejected';
       })
-      .addCase(itemListDeleteThunk.fulfilled, (state) => {
+      .addCase(itemListDeleteThunk.fulfilled, (state, action) => {
+        replaceOldList(state.itemLists, action.payload.itemList);
         state.error = initialError;
         state.reqStatus = 'fulfilled';
       })
@@ -203,7 +206,8 @@ export const itemsListSlice = createSlice({
         state.error = action.payload?.error || initialError;
         state.reqStatus = 'rejected';
       })
-      .addCase(itemAddThunk.fulfilled, (state) => {
+      .addCase(itemAddThunk.fulfilled, (state, action) => {
+        replaceOldList(state.itemLists, action.payload.itemList);
         state.error = initialError;
         state.reqStatus = 'fulfilled';
       })
@@ -214,7 +218,8 @@ export const itemsListSlice = createSlice({
         state.error = action.payload?.error || initialError;
         state.reqStatus = 'rejected';
       })
-      .addCase(itemUpdateThunk.fulfilled, (state) => {
+      .addCase(itemUpdateThunk.fulfilled, (state, action) => {
+        replaceOldList(state.itemLists, action.payload.itemList);
         state.error = initialError;
         state.reqStatus = 'fulfilled';
       })
@@ -225,7 +230,8 @@ export const itemsListSlice = createSlice({
         state.error = action.payload?.error || initialError;
         state.reqStatus = 'rejected';
       })
-      .addCase(itemDeleteThunk.fulfilled, (state) => {
+      .addCase(itemDeleteThunk.fulfilled, (state, action) => {
+        replaceOldList(state.itemLists, action.payload.itemList);
         state.error = initialError;
         state.reqStatus = 'fulfilled';
       })

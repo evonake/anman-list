@@ -24,6 +24,10 @@ const ItemSchema = new mongoose.Schema<TypeItem>({
     trim: true,
     default: defaultItem.status,
   },
+  listId: {
+    type: mongoose.Schema.Types.ObjectId,
+    required: true,
+  },
 });
 
 export default mongoose.model('Item', ItemSchema);

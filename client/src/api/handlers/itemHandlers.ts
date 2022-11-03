@@ -1,8 +1,11 @@
+/* eslint-disable @typescript-eslint/return-await */
 import ax from '../axios';
+
 import type { TypeItem, TypeDBItem } from '../../types/item';
+import { handleItemListGet } from './itemListHandlers';
 
 const axios = ax.create({
-  baseURL: 'items/',
+  baseURL: '/items',
 });
 
 export const handleItemGet = async () => {
@@ -14,17 +17,27 @@ export const handleItemGet = async () => {
 export const handleItemAdd = async (item : TypeItem) => {
   const res = await axios.post('/', { item });
 
-  return res.data;
+  if (!res.data.success) {
+    return res.data;
+  }
+
+  return await handleItemListGet(item.listId);
 };
 
 export const handleItemUpdate = async (item : TypeDBItem) => {
   const res = await axios.put('/', { item });
 
-  return res.data;
+  if (!res.data.success) {
+    return res.data;
+  }
+  return await handleItemListGet(item.listId);
 };
 
-export const handleItemDelete = async (id : string) => {
-  const res = await axios.delete('/', { params: { itemId: id } });
+export const handleItemDelete = async (itemId : string, listId: string) => {
+  const res = await axios.delete('/', { params: { itemId } });
 
-  return res.data;
+  if (!res.data.success) {
+    return res.data;
+  }
+  return await handleItemListGet(listId);
 };

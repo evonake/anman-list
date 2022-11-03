@@ -177,8 +177,9 @@ describe('POST /users/logout', () => {
     const res1 = await request(app)
       .get('/users/auth')
       .set('Cookie', `connect.sid=${token}`)
-      .expect(401);
+      .expect(200);
 
+    expect(res1.body.success).toBe(false);
     expect(res1.body.error).toEqual({
       type: 'auth',
       message: 'Not authenticated.',

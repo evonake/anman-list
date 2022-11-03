@@ -4,6 +4,7 @@ export type TypeItem = {
   link?: string;
   trackers: { name: string; value: number }[];
   status?: 'ongoing' | 'completed' | 'dropped';
+  listId: string;
 };
 
 export type TypeDBItem = TypeItem & {
@@ -13,9 +14,9 @@ export type TypeDBItem = TypeItem & {
 export type TypeItemList = {
   name: string;
   trackerNames: string[];
-  items: TypeDBItem[];
 };
 
 export type TypeDBItemList = TypeItemList & {
   _id: string;
+  items: TypeDBItem[];
 };
