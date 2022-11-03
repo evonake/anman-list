@@ -49,7 +49,7 @@ function Home() {
       {itemLists.map((list, i) => (
         <TabPanel key={list._id} id={list._id} show={i === currentListIndex}>
           <ItemList itemList={list} />
-          <AddItem listId={list._id} />
+          <AddItem itemList={list} />
         </TabPanel>
       ))}
     </div>

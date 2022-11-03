@@ -8,14 +8,14 @@ import {
 import BookmarkIcon from '@mui/icons-material/Bookmark';
 import CollectionsBookmarkIcon from '@mui/icons-material/CollectionsBookmark';
 
-import type { TypeItem, TypeItemList } from '../types/item';
+import type { TypeItem, TypeItemList, TypeDBItemList } from '../types/item';
 
 import ItemModal from './ItemModal';
 import ItemListModal from './ItemListModal';
 
 import '../styles/components/add.css';
 
-const initialItemInput: TypeItem = {
+const defaultInitialItem: TypeItem = {
   title: '',
   link: '',
   status: 'ongoing',
@@ -30,9 +30,15 @@ const initialItemListInput: TypeItemList = {
   trackerNames: ['Page'],
 };
 
-function AddFab({ listId }: { listId: string }) {
+function AddFab({ itemList }: { itemList: TypeDBItemList }) {
   const [itemModalOpen, setItemModalOpen] = useState(false);
   const [itemListModalOpen, setItemListModalOpen] = useState(false);
+
+  const initialItem: TypeItem = {
+    ...defaultInitialItem,
+    listId: itemList._id,
+    trackers: itemList.trackerNames.map((name) => ({ name, value: 0 })),
+  };
 
   return (
     <div className="add-item">
@@ -57,7 +63,7 @@ function AddFab({ listId }: { listId: string }) {
         add
         open={itemModalOpen}
         close={() => setItemModalOpen(false)}
-        item={{ ...initialItemInput, listId }}
+        item={initialItem}
       />
 
       <ItemListModal
