@@ -159,7 +159,7 @@ export const itemsListSlice = createSlice({
         state.reqStatus = 'rejected';
       })
       .addCase(itemListAddThunk.fulfilled, (state, action) => {
-        replaceOldList(state.itemLists, action.payload.itemList);
+        state.itemLists = action.payload.itemLists;
         state.error = initialError;
         state.reqStatus = 'fulfilled';
       })
@@ -183,7 +183,7 @@ export const itemsListSlice = createSlice({
         state.reqStatus = 'rejected';
       })
       .addCase(itemListDeleteThunk.fulfilled, (state, action) => {
-        replaceOldList(state.itemLists, action.payload.itemList);
+        state.itemLists = action.payload.itemLists;
         state.error = initialError;
         state.reqStatus = 'fulfilled';
       })

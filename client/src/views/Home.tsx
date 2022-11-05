@@ -42,7 +42,7 @@ function Home() {
         onChange={(e, n) => handleTabChange(n)}
       >
         {itemLists.map((list, i) => (
-          <Tab label={list.name} value={i} />
+          <Tab key={list._id} label={list.name} value={i} />
         ))}
       </Tabs>
 
@@ -64,13 +64,8 @@ function TabPanel({ show, id, ...props }: TabPanelProps) {
   const { children } = props;
 
   return (
-    <div
-      role="tabpanel"
-      hidden={show}
-      id={`simple-tabpanel-${id}`}
-      aria-labelledby={`simple-tab-${id}`}
-    >
-      {children}
+    <div>
+      {show && children}
     </div>
   );
 }
