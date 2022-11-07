@@ -115,7 +115,7 @@ export const updateItemList: RequestHandler = async (req, res) => {
 /**
  * Deletes an item list from a user
  * @route DELETE /items/lists
- * @param {string} req.params.id - id of item list to delete
+ * @param {string} req.params.itemListId - id of item list to delete
  * @returns {Object} 200 - success message
  * @returns {Error}  400 - Invalid username
  * @returns {Error}  400 - Invalid item list id

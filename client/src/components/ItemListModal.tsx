@@ -43,7 +43,7 @@ type Props = {
 const defaultProps = {
   add: false,
 };
-function ItemModal({
+function ItemListModal({
   add,
   open,
   close,
@@ -129,9 +129,9 @@ function ItemModal({
     <div>
       <Modal
         open={open}
-        onClose={close}
+        onClose={resetAndClose}
       >
-        <Card className="item-list-modal item-card">
+        <Card className="item-list-border item-list-modal item-card">
           <CardHeader className="item-header" title={`${add ? 'Add' : 'Edit'} Item List`} />
           <CardContent className="item-list-modal-content">
             <Stack className="fill" justifyContent="space-between">
@@ -200,7 +200,7 @@ function ItemModal({
     </div>
   );
 }
-ItemModal.defaultProps = defaultProps;
+ItemListModal.defaultProps = defaultProps;
 
 type TrackerNamesListProps = {
   trackerNames: TypeItemList['trackerNames'];
@@ -244,4 +244,4 @@ function TrackerNamesList({
   );
 }
 
-export default ItemModal;
+export default ItemListModal;

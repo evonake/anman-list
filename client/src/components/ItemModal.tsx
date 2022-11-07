@@ -1,5 +1,5 @@
 /* eslint-disable react/no-array-index-key */
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 
 import {
   Button,
@@ -151,14 +151,21 @@ function ItemModal({
     setStatus(item.status);
     setConfirmDelete(false);
     setTrackersInput(item.trackers);
-    setTrackersErrors(initialTrackersErrors);
+    setTrackersErrors(item.trackers.map(() => ({ name: false, value: false })));
   };
+
+  useEffect(() => {
+    if (add) {
+      setTrackersInput(item.trackers);
+      setTrackersErrors(item.trackers.map(() => ({ name: false, value: false })));
+    }
+  }, [item.trackers]);
 
   return (
     <div>
       <Modal
         open={open}
-        onClose={close}
+        onClose={resetAndClose}
       >
         <Card className={`item-modal item-card ${status}`}>
           <CardHeader className="item-header" title={`${add ? 'Add' : 'Edit'} Item`} />

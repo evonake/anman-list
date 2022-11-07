@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 
 import {
   SpeedDial,
@@ -34,11 +34,19 @@ function AddFab({ itemList }: { itemList: TypeDBItemList }) {
   const [itemModalOpen, setItemModalOpen] = useState(false);
   const [itemListModalOpen, setItemListModalOpen] = useState(false);
 
-  const initialItem: TypeItem = {
+  const [initialItem, setInitialItem] = useState<TypeItem>({
     ...defaultInitialItem,
     listId: itemList._id,
     trackers: itemList.trackerNames.map((name) => ({ name, value: 0 })),
-  };
+  });
+
+  useEffect(() => {
+    setInitialItem({
+      ...initialItem,
+      listId: itemList._id,
+      trackers: itemList.trackerNames.map((name) => ({ name, value: 0 })),
+    });
+  }, [itemList]);
 
   return (
     <div className="add-item">

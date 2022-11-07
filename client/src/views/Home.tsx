@@ -31,6 +31,12 @@ function Home() {
     dispatch(itemGetThunk());
   }, []);
 
+  useEffect(() => {
+    if (currentListIndex !== 0 && currentListIndex > itemLists.length - 1) {
+      setCurrentListIndex(itemLists.length - 1);
+    }
+  }, [itemLists]);
+
   // TODO: Add a loading spinner (many places)
   // TODO: Add a card to edit item list settings (name, trackers)
   return (

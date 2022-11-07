@@ -37,7 +37,7 @@ export const handleItemListUpdate = async (itemList: TypeDBItemList) => {
 };
 
 export const handleItemListDelete = async (id: string) => {
-  const res = await axios.delete('/', { params: { listId: id } });
+  const res = await axios.delete('/', { params: { itemListId: id } });
 
   if (!res.data.success) {
     return res.data;

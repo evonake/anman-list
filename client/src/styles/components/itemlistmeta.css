@@ -1,0 +1,11 @@
+.item-list-meta {
+  position: relative;
+  height: 150px;
+  width: 50vw;
+  min-width: 300px;
+  padding: 10px;
+}
+
+.item-list-border {
+  border: 1px solid #FFFFFF
+}
