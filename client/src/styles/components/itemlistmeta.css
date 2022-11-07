@@ -1,9 +1,13 @@
 .item-list-meta {
   position: relative;
   height: 150px;
-  width: 50vw;
-  min-width: 300px;
+  width: 35vw;
+  min-width: 250px;
   padding: 10px;
+}
+
+.item-list-content {
+  height: 77%
 }
 
 .item-list-border {

@@ -54,6 +54,11 @@ function Item({ item }: Props) {
     setEdited(JSON.stringify(newTrackers) !== JSON.stringify(originalTrackers));
   };
 
+  const openEditModal = () => {
+    handleCancelEdit();
+    setEditOpen(true);
+  };
+
   const handleEditItem = () => {
     const newItem = {
       ...item,
@@ -89,7 +94,7 @@ function Item({ item }: Props) {
 
         <CardActions className="fill-width item-actions">
           <Stack className="fill-width" direction="row" justifyContent="space-between">
-            <IconButton onClick={() => setEditOpen(true)}>
+            <IconButton onClick={openEditModal}>
               <EditIcon />
             </IconButton>
             {edited && (

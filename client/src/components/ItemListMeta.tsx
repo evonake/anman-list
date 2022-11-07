@@ -21,7 +21,7 @@ function ItemListMeta({ itemList }: { itemList: TypeDBItemList }) {
   return (
     <div>
       <Card className="item-list-border item-list-meta item-card">
-        <CardContent className="item-content">
+        <CardContent className="item-list-content">
           <Typography variant="h4">{itemList.name}</Typography>
         </CardContent>
 

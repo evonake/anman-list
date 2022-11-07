@@ -245,6 +245,9 @@ export const itemsListSlice = createSlice({
   },
 });
 
+export function selectItemsListById(state: RootState, id: string) {
+  return state.itemLists.itemLists.find((iL) => iL._id === id);
+}
 export const selectItemsLists = (state: RootState) => state.itemLists.itemLists;
 export const selectItemsListsError = (state: RootState) => state.itemLists.error;
 export const selectItemsListsReqStatus = (state: RootState) => state.itemLists.reqStatus;

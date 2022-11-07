@@ -15,8 +15,7 @@
 }
 
 .item-actions {
-  position: absolute;
-  bottom: 5px;
+  height: 15%;
 }
 
 .ongoing {

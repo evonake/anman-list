@@ -8,6 +8,9 @@ import {
 import BookmarkIcon from '@mui/icons-material/Bookmark';
 import CollectionsBookmarkIcon from '@mui/icons-material/CollectionsBookmark';
 
+import { useAppSelector } from '../redux/hooks';
+import { selectItemsListById } from '../redux/features/itemListsSlice';
+
 import type { TypeItem, TypeItemList, TypeDBItemList } from '../types/item';
 
 import ItemModal from './ItemModal';
@@ -30,7 +33,9 @@ const initialItemListInput: TypeItemList = {
   trackerNames: ['Page'],
 };
 
-function AddFab({ itemList }: { itemList: TypeDBItemList }) {
+function AddFab({ listId }: { listId: TypeDBItemList['_id'] }) {
+  const itemList = useAppSelector((s) => selectItemsListById(s, listId)) as TypeDBItemList;
+
   const [itemModalOpen, setItemModalOpen] = useState(false);
   const [itemListModalOpen, setItemListModalOpen] = useState(false);
 

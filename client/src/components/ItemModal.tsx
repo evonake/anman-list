@@ -155,10 +155,8 @@ function ItemModal({
   };
 
   useEffect(() => {
-    if (add) {
-      setTrackersInput(item.trackers);
-      setTrackersErrors(item.trackers.map(() => ({ name: false, value: false })));
-    }
+    setTrackersInput(item.trackers);
+    setTrackersErrors(item.trackers.map(() => ({ name: false, value: false })));
   }, [item.trackers]);
 
   return (
