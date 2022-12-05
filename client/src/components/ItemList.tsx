@@ -1,4 +1,4 @@
-import React, { useEffect } from 'react';
+import React from 'react';
 
 import { Stack } from '@mui/material';
 
@@ -16,10 +16,6 @@ type Props = {
 };
 function ItemList({ listId }: Props) {
   const itemList = useAppSelector((s) => selectItemsListById(s, listId)) as TypeDBItemList;
-
-  useEffect(() => {
-    console.log('ItemList updated');
-  }, [itemList]);
 
   return (
     <Stack className="item-list" spacing={2} alignItems="center">
