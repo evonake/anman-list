@@ -19,7 +19,7 @@ function ItemListMeta({ itemList }: { itemList: TypeDBItemList }) {
   const [editOpen, setEditOpen] = useState(false);
 
   return (
-    <div>
+    <>
       <Card className="item-list-border item-list-meta item-card">
         <CardContent className="item-list-content">
           <Typography variant="h4">{itemList.name}</Typography>
@@ -33,7 +33,7 @@ function ItemListMeta({ itemList }: { itemList: TypeDBItemList }) {
       </Card>
 
       <ItemListModal open={editOpen} close={() => setEditOpen(false)} itemList={itemList} />
-    </div>
+    </>
   );
 }
 
