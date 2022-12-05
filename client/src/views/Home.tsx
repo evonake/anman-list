@@ -3,12 +3,11 @@ import React, { useEffect, useState } from 'react';
 import {
   Tab,
   Tabs,
+  CircularProgress,
 } from '@mui/material';
 
 import { useAppDispatch, useAppSelector } from '../redux/hooks';
-import { itemGetThunk, selectItemsLists } from '../redux/features/itemListsSlice';
-
-import type { TypeDBItem } from '../types/item';
+import { itemGetThunk, selectItemsLists, selectItemsListsReqStatus } from '../redux/features/itemListsSlice';
 
 import ItemList from '../components/ItemList';
 import AddItem from '../components/AddFab';
@@ -20,6 +19,7 @@ function Home() {
   const dispatch = useAppDispatch();
 
   const itemLists = useAppSelector(selectItemsLists);
+  const reqStatus = useAppSelector(selectItemsListsReqStatus);
 
   const [currentListIndex, setCurrentListIndex] = useState(0);
 
@@ -51,26 +51,16 @@ function Home() {
         ))}
       </Tabs>
 
-      {itemLists.map((list, i) => (
-        <TabPanel key={list._id} id={list._id} show={i === currentListIndex}>
-          <ItemList listId={list._id} />
-          <AddItem listId={list._id} />
-        </TabPanel>
-      ))}
-    </div>
-  );
-}
-
-type TabPanelProps = React.PropsWithChildren & {
-  show: boolean;
-  id: TypeDBItem['_id'];
-};
-function TabPanel({ show, id, ...props }: TabPanelProps) {
-  const { children } = props;
-
-  return (
-    <div>
-      {show && children}
+      {reqStatus !== 'fulfilled' ? (
+        <div className="fill-height" id="spinner">
+          <CircularProgress />
+        </div>
+      ) : (
+        <>
+          <ItemList listId={itemLists[currentListIndex]._id} />
+          <AddItem listId={itemLists[currentListIndex]._id} />
+        </>
+      )}
     </div>
   );
 }
