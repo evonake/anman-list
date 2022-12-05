@@ -38,7 +38,6 @@ function Home() {
   }, [itemLists]);
 
   // TODO: Add a loading spinner (many places)
-  // TODO: Add a card to edit item list settings (name, trackers)
   return (
     <div id="home">
       <h1>Home</h1>
