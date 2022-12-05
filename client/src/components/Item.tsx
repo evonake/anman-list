@@ -15,17 +15,17 @@ import EditIcon from '@mui/icons-material/Edit';
 import CheckIcon from '@mui/icons-material/Check';
 import CloseIcon from '@mui/icons-material/Close';
 
-import type TypeItem from '../types/item';
+import type { TypeDBItem } from '../types/item';
 
 import { useAppDispatch } from '../redux/hooks';
-import { itemUpdate } from '../redux/constants/actionCreators/itemActions';
+import { itemUpdateThunk } from '../redux/features/itemListsSlice';
 
 import ItemModal from './ItemModal';
 
 import '../styles/components/item.css';
 
 type Props = {
-  item: TypeItem;
+  item: TypeDBItem;
 };
 function Item({ item }: Props) {
   const dispatch = useAppDispatch();
@@ -42,7 +42,7 @@ function Item({ item }: Props) {
   } = item;
   const originalTrackers = item.trackers;
 
-  const [trackers, setTrackers] = useState<TypeItem['trackers']>(originalTrackers);
+  const [trackers, setTrackers] = useState<TypeDBItem['trackers']>(originalTrackers);
 
   const handleTrackerChange = (i: number) => (value: number) => {
     // i: index of tracker
@@ -54,8 +54,18 @@ function Item({ item }: Props) {
     setEdited(JSON.stringify(newTrackers) !== JSON.stringify(originalTrackers));
   };
 
+  const openEditModal = () => {
+    handleCancelEdit();
+    setEditOpen(true);
+  };
+
   const handleEditItem = () => {
-    dispatch(itemUpdate({ ...item, trackers }));
+    const newItem = {
+      ...item,
+      trackers,
+    };
+
+    dispatch(itemUpdateThunk(newItem));
     setEdited(false);
   };
 
@@ -84,7 +94,7 @@ function Item({ item }: Props) {
 
         <CardActions className="fill-width item-actions">
           <Stack className="fill-width" direction="row" justifyContent="space-between">
-            <IconButton onClick={() => setEditOpen(true)}>
+            <IconButton onClick={openEditModal}>
               <EditIcon />
             </IconButton>
             {edited && (

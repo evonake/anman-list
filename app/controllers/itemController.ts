@@ -1,13 +1,16 @@
 import type { RequestHandler } from 'express';
 
 import User from '../models/userModel';
+import ItemList from '../models/itemListModel';
 import Item from '../models/itemModel';
-import type { TypeItem } from '../constants/modelTypes';
+import { defaultItem, type TypeItem } from '../constants/modelTypes';
+
+import resError from './misc';
 
 /**
- * Get's all user's items
+ * Gets all item lists for a user
  * @route GET /items
- * @returns {TypeItem[]} 200 - array of items
+ * @returns {TypeItemList[]} 200 - array of items
  * @returns {Error}  400 - Invalid username
  */
 export const getItems: RequestHandler = async (req, res) => {
@@ -15,19 +18,15 @@ export const getItems: RequestHandler = async (req, res) => {
 
   const user = await User.findById(_id);
   if (!user) {
-    res.status(400).json({
-      success: false,
-      type: 'username',
-      message: 'Username does not exist.',
-    });
+    resError(res, { type: 'user', message: 'User does not exist.' });
     return;
   }
 
-  const items = await Item.find({ _id: { $in: user.itemIds } }).lean();
+  const itemLists = await ItemList.find({ _id: { $in: user.lists } }).populate('items').lean();
 
   res.status(200).json({
     success: true,
-    items,
+    itemLists,
   });
 };
 
@@ -41,72 +40,31 @@ export const getItems: RequestHandler = async (req, res) => {
  */
 export const addItem: RequestHandler = async (req, res) => {
   const { _id } = req.session.passport!.user;
-  const { item } = req.body;
+  const item = { ...defaultItem, ...req.body.item };
 
-  if (!item || (item as TypeItem).title === undefined) {
-    res.status(400).json({
-      success: false,
-      type: 'item',
-      message: 'Invalid item.',
-    });
+  if (!item || (item as TypeItem).title === undefined || (item as TypeItem).listId === undefined) {
+    resError(res, { type: 'item', message: 'Invalid item.' });
     return;
   }
 
   const user = await User.findById(_id);
   if (!user) {
-    res.status(400).json({
-      success: false,
-      type: 'username',
-      message: 'Username does not exist.',
-    });
+    resError(res, { type: 'user', message: 'User does not exist.' });
+    return;
+  }
+  if (!user.lists.includes(item.listId as any)) {
+    resError(res, { type: 'itemListId', message: 'Item list does not exist' });
+    return;
+  }
+  const itemList = await ItemList.findById(item.listId);
+  if (!itemList) {
+    resError(res, { type: 'item', message: 'Item does not exist' });
     return;
   }
 
   const newItem = await Item.create(item);
-  user.itemIds.push(newItem._id);
-  user.save();
-
-  res.status(200).json({
-    success: true,
-  });
-};
-
-/**
- * Deletes an item from a user's list
- * @route DELETE /items/:itemId
- * @param {String} req.query.itemId - id of item to delete
- * @returns {Object} 200 - success message
- * @returns {Error}  400 - Invalid username
- * @returns {Error}  400 - Invalid item id
- */
-export const deleteItem: RequestHandler = async (req, res) => {
-  const { _id } = req.session.passport!.user;
-  const { itemId } = req.query;
-
-  if (!itemId) {
-    res.status(400).json({
-      success: false,
-      type: 'itemId',
-      message: 'Item id is required.',
-    });
-    return;
-  }
-
-  // remove item from user itemId list
-  const user = await User.findById(_id);
-  if (!user) {
-    res.status(400).json({
-      success: false,
-      type: 'username',
-      message: 'Username does not exist.',
-    });
-    return;
-  }
-  user.itemIds = user.itemIds.filter((id) => id.toString() !== itemId);
-  user.save();
-
-  // delete item document
-  await Item.findByIdAndDelete(itemId);
+  itemList.items.push(newItem._id);
+  await itemList.save();
 
   res.status(200).json({
     success: true,
@@ -125,35 +83,79 @@ export const updateItem: RequestHandler = async (req, res) => {
   const { _id } = req.session.passport!.user;
   const { item } = req.body;
 
-  if (!item) {
-    res.status(400).json({
-      success: false,
-      type: 'item',
-      message: 'Item is required.',
-    });
+  if (!item || (item as TypeItem)._id === undefined || (item as TypeItem).listId === undefined) {
+    resError(res, { type: 'item', message: 'Invalid item.' });
     return;
   }
 
   const user = await User.findById(_id);
   if (!user) {
-    res.status(400).json({
-      success: false,
-      type: 'username',
-      message: 'Username does not exist.',
-    });
+    resError(res, { type: 'user', message: 'User does not exist.' });
     return;
   }
-
-  if (!user.itemIds.includes(item._id)) {
-    res.status(400).json({
-      success: false,
-      type: 'item',
-      message: 'Item does not exist.',
-    });
+  if (!user.lists.includes(item.listId as any)) {
+    resError(res, { type: 'item', message: 'Item does not exist.' });
+    return;
+  }
+  const itemList = await ItemList.findById(item.listId);
+  if (!itemList) {
+    resError(res, { type: 'item', message: 'Item does not exist.' });
+    return;
+  }
+  if (!itemList.items.includes(item._id)) {
+    resError(res, { type: 'item', message: 'Item does not exist.' });
     return;
   }
 
   await Item.findByIdAndUpdate(item._id, item);
+
+  res.status(200).json({
+    success: true,
+  });
+};
+
+/**
+ * Deletes an item from a user's list
+ * @route DELETE /items/:itemId
+ * @param {String} req.query.itemId - id of item to delete
+ * @returns {Object} 200 - success message
+ * @returns {Error}  400 - Invalid username
+ * @returns {Error}  400 - Invalid item id
+ */
+export const deleteItem: RequestHandler = async (req, res) => {
+  const { _id } = req.session.passport!.user;
+  const { itemId } = req.query;
+
+  if (!itemId || typeof itemId !== 'string') {
+    resError(res, { type: 'itemId', message: 'Invalid item id.' });
+    return;
+  }
+
+  const user = await User.findById(_id);
+  if (!user) {
+    resError(res, { type: 'user', message: 'User does not exist.' });
+    return;
+  }
+  const item = await Item.findByIdAndDelete(itemId);
+  if (!item) {
+    resError(res, { type: 'item', message: 'Item does not exist.' });
+    return;
+  }
+  if (!user.lists.includes(item.listId as any)) {
+    resError(res, { type: 'item', message: 'Item does not exist.' });
+    return;
+  }
+  const itemList = await ItemList.findById(item.listId);
+  if (!itemList) {
+    resError(res, { type: 'itemListId', message: 'Item list does not exist.' });
+    return;
+  }
+  if (!itemList.items.includes(itemId as any)) {
+    resError(res, { type: 'item', message: 'Item does not exist.' });
+    return;
+  }
+  itemList.items = itemList.items.filter((id) => id.toString() !== itemId);
+  await itemList.save();
 
   res.status(200).json({
     success: true,

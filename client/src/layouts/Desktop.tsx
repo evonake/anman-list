@@ -1,7 +1,6 @@
 import React, { useEffect, useState } from 'react';
 
-import { useAppDispatch, useAppSelector } from '../redux/hooks';
-import { errorReset } from '../redux/constants/actionCreators/errorActions';
+import { useAppSelector } from '../redux/hooks';
 import { selectIsLoggedIn } from '../redux/features/userSlice';
 
 import Login from '../views/Login';
@@ -9,16 +8,9 @@ import Register from '../views/Register';
 import Home from '../views/Home';
 
 function Desktop() {
-  const dispatch = useAppDispatch();
-
   const isLoggedIn = useAppSelector(selectIsLoggedIn);
 
-  const [view, sView] = useState('login');
-
-  const setView = (v: string) => {
-    sView(v);
-    dispatch(errorReset());
-  };
+  const [view, setView] = useState('login');
 
   useEffect(() => {
     if (isLoggedIn) {

@@ -1,5 +1,6 @@
 import mongoose from 'mongoose';
 
+import { defaultItem } from '../constants/modelTypes';
 import type { TypeItem } from '../constants/modelTypes';
 
 const ItemSchema = new mongoose.Schema<TypeItem>({
@@ -11,17 +12,21 @@ const ItemSchema = new mongoose.Schema<TypeItem>({
   link: {
     type: String,
     trim: true,
-    default: '',
+    default: defaultItem.link,
   },
   trackers: {
     type: [new mongoose.Schema({ name: String, value: Number }, { _id: false })],
-    default: [{ name: 'Page', value: 0 }],
+    default: defaultItem.trackers,
     minItems: 1,
   },
   status: {
     type: String,
     trim: true,
-    default: 'ongoing',
+    default: defaultItem.status,
+  },
+  listId: {
+    type: mongoose.Schema.Types.ObjectId,
+    required: true,
   },
 });
 

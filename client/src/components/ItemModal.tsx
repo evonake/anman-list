@@ -1,5 +1,5 @@
 /* eslint-disable react/no-array-index-key */
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 
 import {
   Button,
@@ -21,21 +21,26 @@ import CheckIcon from '@mui/icons-material/Check';
 import DeleteIcon from '@mui/icons-material/Delete';
 
 import { useAppDispatch } from '../redux/hooks';
-import { itemAdd, itemDelete, itemUpdate } from '../redux/constants/actionCreators/itemActions';
+import {
+  itemAddThunk,
+  itemUpdateThunk,
+  itemDeleteThunk,
+  selectItemsListsError,
+} from '../redux/features/itemListsSlice';
 
-import type TypeItem from '../types/item';
+import type { TypeItem, TypeDBItem } from '../types/item';
 
 import AddItemInput from './AddItemInput';
 import useInputWithErrors from '../hooks/inputWithErrors';
 
 import '../styles/components/itemmodal.css';
 
-type Input = Omit<TypeItem, 'trackers' | 'status'>;
+type Input = Omit<TypeItem, 'trackers' | 'status' | 'listId'>;
 type Props = {
   add?: boolean;
   open: boolean;
   close: () => void;
-  item: TypeItem;
+  item: TypeItem | TypeDBItem;
 } & typeof defaultProps;
 const defaultProps = {
   add: false,
@@ -56,7 +61,7 @@ function ItemModal({
     errors,
     validate,
     reset: resetInputs,
-  } = useInputWithErrors<Input>({ title: item.title, link: item.link }, ['link']);
+  } = useInputWithErrors<Input>({ title: item.title, link: item.link }, selectItemsListsError, ['link']);
 
   const [status, setStatus] = useState<TypeItem['status']>(item.status);
 
@@ -124,18 +129,19 @@ function ItemModal({
       };
 
       if (add) {
-        dispatch(itemAdd(newItem));
+        dispatch(itemAddThunk(newItem));
+        resetAndClose();
       } else {
-        dispatch(itemUpdate(newItem));
+        dispatch(itemUpdateThunk(newItem as TypeDBItem));
+        close();
       }
-      close();
     } else {
       setTrackersErrors(newTrackersErrors);
     }
   };
 
   const handleDelete = () => {
-    dispatch(itemDelete(item._id!));
+    dispatch(itemDeleteThunk({ itemId: (item as TypeDBItem)._id, listId: item.listId }));
     close();
   };
 
@@ -145,14 +151,19 @@ function ItemModal({
     setStatus(item.status);
     setConfirmDelete(false);
     setTrackersInput(item.trackers);
-    setTrackersErrors(initialTrackersErrors);
+    setTrackersErrors(item.trackers.map(() => ({ name: false, value: false })));
   };
+
+  useEffect(() => {
+    setTrackersInput(item.trackers);
+    setTrackersErrors(item.trackers.map(() => ({ name: false, value: false })));
+  }, [item.trackers]);
 
   return (
     <div>
       <Modal
         open={open}
-        onClose={close}
+        onClose={resetAndClose}
       >
         <Card className={`item-modal item-card ${status}`}>
           <CardHeader className="item-header" title={`${add ? 'Add' : 'Edit'} Item`} />

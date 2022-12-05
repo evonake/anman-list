@@ -5,13 +5,13 @@ import {
 } from '@mui/material';
 
 import { useAppDispatch } from '../redux/hooks';
-import { userLogout } from '../redux/constants/actionCreators/userActions';
+import { logoutThunk } from '../redux/features/userSlice';
 
 function LogoutButton() {
   const dispatch = useAppDispatch();
 
   const handleSubmit = () => {
-    dispatch(userLogout());
+    dispatch(logoutThunk());
   };
 
   return (

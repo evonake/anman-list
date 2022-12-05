@@ -1,7 +1,8 @@
 import React, { useState, useEffect } from 'react';
 
-import { selectError } from '../redux/features/errorSlice';
 import { useAppSelector } from '../redux/hooks';
+import type { RootState } from '../redux/store';
+import type TypeError from '../types/error';
 
 type MyObject = {
   [key: string]: string | number;
@@ -9,6 +10,7 @@ type MyObject = {
 
 function useInputWithErrors<T extends MyObject>(
   initialInputs: T,
+  errorSelector: (state: RootState) => TypeError,
   optionalInputs: (keyof T)[] = [],
 ) {
   type E = { [key in keyof T]?: string };
@@ -18,7 +20,7 @@ function useInputWithErrors<T extends MyObject>(
     initialErrors[key] = '';
   });
 
-  const error = useAppSelector(selectError);
+  const error = useAppSelector(errorSelector);
 
   const [inputs, setInputs] = useState<T>(initialInputs);
   const [errors, setErrors] = useState<E>(initialErrors);
