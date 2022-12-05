@@ -127,80 +127,78 @@ function ItemListModal({
   };
 
   return (
-    <div>
-      <Modal
-        open={open}
-        onClose={resetAndClose}
-        closeAfterTransition
-      >
-        <Fade in={open}>
-          <Card className="item-list-border item-list-modal item-card">
-            <CardHeader className="item-header" title={`${add ? 'Add' : 'Edit'} Item List`} />
-            <CardContent className="item-list-modal-content">
-              <Stack className="fill" justifyContent="space-between">
-                <AddItemInput
-                  required
-                  className="fill-width"
-                  label="Name"
-                  error={errors.name}
-                  onChange={handleInputChange('name')}
-                >
-                  {inputs.name}
-                </AddItemInput>
+    <Modal
+      open={open}
+      onClose={resetAndClose}
+      closeAfterTransition
+    >
+      <Fade in={open}>
+        <Card className="item-list-border item-list-modal item-card">
+          <CardHeader className="item-header" title={`${add ? 'Add' : 'Edit'} Item List`} />
+          <CardContent className="item-list-modal-content">
+            <Stack className="fill" justifyContent="space-between">
+              <AddItemInput
+                required
+                className="fill-width"
+                label="Name"
+                error={errors.name}
+                onChange={handleInputChange('name')}
+              >
+                {inputs.name}
+              </AddItemInput>
 
-                <TrackerNamesList
-                  trackerNames={trackerNamesInputs}
-                  errors={trackerNamesErrors}
-                  onChange={handleChangeTracker}
-                  onRemove={handleRemoveTracker}
-                  onAdd={handleAddTracker}
-                />
-              </Stack>
-            </CardContent>
+              <TrackerNamesList
+                trackerNames={trackerNamesInputs}
+                errors={trackerNamesErrors}
+                onChange={handleChangeTracker}
+                onRemove={handleRemoveTracker}
+                onAdd={handleAddTracker}
+              />
+            </Stack>
+          </CardContent>
 
-            <CardActions className="item-modal-actions">
-              <Stack className="fill-width" direction="row" justifyContent="flex-end" spacing={1}>
-                {!add && (
+          <CardActions className="item-modal-actions">
+            <Stack className="fill-width" direction="row" justifyContent="flex-end" spacing={1}>
+              {!add && (
                 <IconButton color="error" onClick={() => setConfirmDelete(true)}>
                   <DeleteIcon />
                 </IconButton>
-                )}
-                <Button variant="outlined" onClick={resetAndClose} startIcon={<CloseIcon />}>
-                  Cancel
+              )}
+              <Button variant="outlined" onClick={resetAndClose} startIcon={<CloseIcon />}>
+                Cancel
+              </Button>
+              {add ? (
+                <Button variant="contained" onClick={handleSubmit} startIcon={<AddIcon />}>
+                  Add
                 </Button>
-                {add ? (
-                  <Button variant="contained" onClick={handleSubmit} startIcon={<AddIcon />}>
-                    Add
+              ) : (
+                <Button variant="contained" onClick={handleSubmit} startIcon={<CheckIcon />}>
+                  Confirm
+                </Button>
+              )}
+            </Stack>
+          </CardActions>
+          <Modal
+            open={confirmDelete}
+            onClose={() => setConfirmDelete(false)}
+          >
+            <Card className="confirm-delete-modal item-card">
+              <CardHeader title="Are you sure you want to delete this item?" />
+              <CardActions className="item-modal-actions">
+                <Stack className="fill-width" direction="row" justifyContent="flex-end" spacing={1}>
+                  <Button variant="outlined" onClick={() => setConfirmDelete(false)} startIcon={<CloseIcon />}>
+                    Cancel
                   </Button>
-                ) : (
-                  <Button variant="contained" onClick={handleSubmit} startIcon={<CheckIcon />}>
-                    Confirm
+                  <Button variant="contained" color="error" onClick={handleDelete} startIcon={<DeleteIcon />}>
+                    Delete
                   </Button>
-                )}
-              </Stack>
-            </CardActions>
-            <Modal
-              open={confirmDelete}
-              onClose={() => setConfirmDelete(false)}
-            >
-              <Card className="confirm-delete-modal item-card">
-                <CardHeader title="Are you sure you want to delete this item?" />
-                <CardActions className="item-modal-actions">
-                  <Stack className="fill-width" direction="row" justifyContent="flex-end" spacing={1}>
-                    <Button variant="outlined" onClick={() => setConfirmDelete(false)} startIcon={<CloseIcon />}>
-                      Cancel
-                    </Button>
-                    <Button variant="contained" color="error" onClick={handleDelete} startIcon={<DeleteIcon />}>
-                      Delete
-                    </Button>
-                  </Stack>
-                </CardActions>
-              </Card>
-            </Modal>
-          </Card>
-        </Fade>
-      </Modal>
-    </div>
+                </Stack>
+              </CardActions>
+            </Card>
+          </Modal>
+        </Card>
+      </Fade>
+    </Modal>
   );
 }
 ItemListModal.defaultProps = defaultProps;
