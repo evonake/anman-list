@@ -6,6 +6,7 @@ import {
   createTheme,
   ThemeProvider,
 } from '@mui/material/styles';
+import type {} from '@mui/lab/themeAugmentation';
 import { Provider } from 'react-redux';
 
 import store from './redux/store';

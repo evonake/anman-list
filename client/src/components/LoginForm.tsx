@@ -1,9 +1,10 @@
 import React from 'react';
 
 import { Stack, Button } from '@mui/material';
+import LoadingButton from '@mui/lab/LoadingButton';
 
-import { useAppDispatch } from '../redux/hooks';
-import { loginThunk, selectUserError } from '../redux/features/userSlice';
+import { useAppDispatch, useAppSelector } from '../redux/hooks';
+import { loginThunk, selectUserError, selectUserReqStatus } from '../redux/features/userSlice';
 
 import useInputWithErrors from '../hooks/inputWithErrors';
 
@@ -29,6 +30,8 @@ const initialInput: InputState = {
 
 function LoginForm({ className, toRegister }: Props) {
   const dispatch = useAppDispatch();
+
+  const reqStatus = useAppSelector(selectUserReqStatus);
 
   const {
     inputs,
@@ -66,13 +69,14 @@ function LoginForm({ className, toRegister }: Props) {
           {inputs.password}
         </LoginInput>
 
-        <Button
+        <LoadingButton
           className="submit-button"
           type="submit"
+          loading={reqStatus === 'pending'}
           variant="contained"
         >
           Log In
-        </Button>
+        </LoadingButton>
         <Button variant="text" onClick={toRegister}>Register</Button>
       </Stack>
     </form>
