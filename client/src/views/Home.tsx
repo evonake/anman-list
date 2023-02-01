@@ -50,6 +50,7 @@ function Home() {
     <div id="home">
       <h1>Home</h1>
       <LogoutButton />
+      <br />
       <Tabs
         value={currentListIndex}
         onChange={(e, n) => handleTabChange(n)}
@@ -64,10 +65,10 @@ function Home() {
           <CircularProgress />
         </div>
       ) : (
-        <>
+        <div>
           <ItemList listId={itemLists[currentListIndex]._id} />
           <AddItem listId={itemLists[currentListIndex]._id} />
-        </>
+        </div>
       )}
     </div>
   );
