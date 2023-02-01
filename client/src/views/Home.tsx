@@ -60,7 +60,7 @@ function Home() {
         ))}
       </Tabs>
 
-      {reqStatus !== 'fulfilled' ? (
+      {(prevListCount.current === 0 && reqStatus !== 'fulfilled') ? (
         <div className="fill-height" id="spinner">
           <CircularProgress />
         </div>
