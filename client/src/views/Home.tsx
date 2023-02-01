@@ -23,7 +23,7 @@ function Home() {
 
   const [currentListIndex, setCurrentListIndex] = useState(0);
 
-  const prevListCount = useRef(itemLists.length);
+  const prevListCount = useRef(0);
 
   const handleTabChange = (n: number) => {
     setCurrentListIndex(n);
@@ -38,7 +38,7 @@ function Home() {
       setCurrentListIndex(itemLists.length - 1);
     }
 
-    if (prevListCount.current < itemLists.length) {
+    if (prevListCount.current !== 0 && prevListCount.current < itemLists.length) {
       setCurrentListIndex(itemLists.length - 1);
     }
 
