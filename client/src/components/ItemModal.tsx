@@ -14,6 +14,7 @@ import {
   Divider,
   Stack,
   Typography,
+  Fade,
 } from '@mui/material';
 import AddIcon from '@mui/icons-material/Add';
 import CloseIcon from '@mui/icons-material/Close';
@@ -160,11 +161,12 @@ function ItemModal({
   }, [item.trackers]);
 
   return (
-    <div>
-      <Modal
-        open={open}
-        onClose={resetAndClose}
-      >
+    <Modal
+      open={open}
+      onClose={resetAndClose}
+      closeAfterTransition
+    >
+      <Fade in={open}>
         <Card className={`item-modal item-card ${status}`}>
           <CardHeader className="item-header" title={`${add ? 'Add' : 'Edit'} Item`} />
           <CardContent className="item-modal-content">
@@ -238,24 +240,25 @@ function ItemModal({
             open={confirmDelete}
             onClose={() => setConfirmDelete(false)}
           >
-            <Card className="confirm-delete-modal item-card">
-              <CardHeader title="Are you sure you want to delete this item?" />
-              <CardActions className="item-modal-actions">
-                <Stack className="fill-width" direction="row" justifyContent="flex-end" spacing={1}>
-                  <Button variant="outlined" onClick={() => setConfirmDelete(false)} startIcon={<CloseIcon />}>
-                    Cancel
-                  </Button>
-                  <Button variant="contained" color="error" onClick={handleDelete} startIcon={<DeleteIcon />}>
-                    Delete
-                  </Button>
-                </Stack>
-              </CardActions>
-            </Card>
+            <Fade in={confirmDelete}>
+              <Card className="confirm-delete-modal item-card">
+                <CardHeader title="Are you sure you want to delete this item?" />
+                <CardActions className="item-modal-actions">
+                  <Stack className="fill-width" direction="row" justifyContent="flex-end" spacing={1}>
+                    <Button variant="outlined" onClick={() => setConfirmDelete(false)} startIcon={<CloseIcon />}>
+                      Cancel
+                    </Button>
+                    <Button variant="contained" color="error" onClick={handleDelete} startIcon={<DeleteIcon />}>
+                      Delete
+                    </Button>
+                  </Stack>
+                </CardActions>
+              </Card>
+            </Fade>
           </Modal>
         </Card>
-
-      </Modal>
-    </div>
+      </Fade>
+    </Modal>
   );
 }
 ItemModal.defaultProps = defaultProps;

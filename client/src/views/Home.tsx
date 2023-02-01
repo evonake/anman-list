@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react';
+import React, { useEffect, useState, useRef } from 'react';
 
 import {
   Tab,
@@ -23,6 +23,8 @@ function Home() {
 
   const [currentListIndex, setCurrentListIndex] = useState(0);
 
+  const prevListCount = useRef(itemLists.length);
+
   const handleTabChange = (n: number) => {
     setCurrentListIndex(n);
   };
@@ -35,6 +37,12 @@ function Home() {
     if (currentListIndex !== 0 && currentListIndex > itemLists.length - 1) {
       setCurrentListIndex(itemLists.length - 1);
     }
+
+    if (prevListCount.current < itemLists.length) {
+      setCurrentListIndex(itemLists.length - 1);
+    }
+
+    prevListCount.current = itemLists.length;
   }, [itemLists]);
 
   // TODO: Add a loading spinner (many places)
