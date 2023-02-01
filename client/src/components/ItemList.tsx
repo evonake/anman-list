@@ -17,14 +17,15 @@ type Props = {
 function ItemList({ listId }: Props) {
   const itemList = useAppSelector((s) => selectItemsListById(s, listId)) as TypeDBItemList;
 
-  const prevLength = useRef(itemList.items.length);
+  const prevListMeta = useRef({ _id: itemList._id, length: itemList.items.length });
 
   useEffect(() => {
-    if (itemList.items.length > prevLength.current) {
+    if (itemList._id === prevListMeta.current._id
+      && itemList.items.length > prevListMeta.current.length) {
       window.scrollTo({ top: document.body.scrollHeight, behavior: 'smooth' });
     }
 
-    prevLength.current = itemList.items.length;
+    prevListMeta.current = { _id: itemList._id, length: itemList.items.length };
   }, [itemList]);
 
   return (
