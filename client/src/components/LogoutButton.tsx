@@ -15,9 +15,7 @@ function LogoutButton() {
   };
 
   return (
-    <div>
-      <Button variant="contained" onClick={handleSubmit}>Logout</Button>
-    </div>
+    <Button variant="contained" onClick={handleSubmit}>Logout</Button>
   );
 }
 

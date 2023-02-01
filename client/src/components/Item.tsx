@@ -75,7 +75,7 @@ function Item({ item }: Props) {
   };
 
   return (
-    <div>
+    <>
       <Card className={`item item-card ${status}`} variant="outlined">
         <CardContent className="item-content">
           <Stack className="fill" justifyContent="space-between">
@@ -112,7 +112,7 @@ function Item({ item }: Props) {
       </Card>
 
       <ItemModal open={editOpen} close={() => setEditOpen(false)} item={item} />
-    </div>
+    </>
   );
 }
 

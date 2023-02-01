@@ -1,4 +1,4 @@
-import React, { useEffect } from 'react';
+import React, { useRef, useEffect } from 'react';
 
 import { Stack } from '@mui/material';
 
@@ -17,16 +17,20 @@ type Props = {
 function ItemList({ listId }: Props) {
   const itemList = useAppSelector((s) => selectItemsListById(s, listId)) as TypeDBItemList;
 
+  const prevLength = useRef(itemList.items.length);
+
   useEffect(() => {
-    console.log('ItemList updated');
+    if (itemList.items.length > prevLength.current) {
+      window.scrollTo({ top: document.body.scrollHeight, behavior: 'smooth' });
+    }
+
+    prevLength.current = itemList.items.length;
   }, [itemList]);
 
   return (
     <Stack className="item-list" spacing={2} alignItems="center">
       <ItemListMeta itemList={itemList} />
-      {itemList.items.map((item) => (
-        <Item item={item} key={item._id} />
-      ))}
+      {itemList.items.map((item) => <Item item={item} key={item._id} />)}
     </Stack>
   );
 }
