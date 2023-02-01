@@ -1,21 +1,27 @@
 import React from 'react';
 
-import {
-  Button,
-} from '@mui/material';
+import LoadingButton from '@mui/lab/LoadingButton';
 
-import { useAppDispatch } from '../redux/hooks';
-import { logoutThunk } from '../redux/features/userSlice';
+import { useAppDispatch, useAppSelector } from '../redux/hooks';
+import { logoutThunk, selectUserReqStatus } from '../redux/features/userSlice';
 
 function LogoutButton() {
   const dispatch = useAppDispatch();
+
+  const reqStatus = useAppSelector(selectUserReqStatus);
 
   const handleSubmit = () => {
     dispatch(logoutThunk());
   };
 
   return (
-    <Button variant="contained" onClick={handleSubmit}>Logout</Button>
+    <LoadingButton
+      variant="contained"
+      onClick={handleSubmit}
+      loading={reqStatus === 'pending'}
+    >
+      Logout
+    </LoadingButton>
   );
 }
 
