@@ -77,7 +77,13 @@ function LoginForm({ className, toRegister }: Props) {
         >
           Log In
         </LoadingButton>
-        <Button variant="text" onClick={toRegister}>Register</Button>
+        <Button
+          variant="text"
+          onClick={toRegister}
+          disabled={reqStatus === 'pending'}
+        >
+          Register
+        </Button>
       </Stack>
     </form>
   );
