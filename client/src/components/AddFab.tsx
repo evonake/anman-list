@@ -33,11 +33,35 @@ const initialItemListInput: TypeItemList = {
   trackerNames: ['Page'],
 };
 
-function AddFab({ listId }: { listId: TypeDBItemList['_id'] }) {
-  const itemList = useAppSelector((s) => selectItemsListById(s, listId)) as TypeDBItemList;
-
+function AddFab({ listId }: { listId: TypeDBItemList['_id'] | undefined }) {
   const [itemModalOpen, setItemModalOpen] = useState(false);
   const [itemListModalOpen, setItemListModalOpen] = useState(false);
+
+  if (!listId) {
+    return (
+      <div className="add-item">
+        <SpeedDial
+          ariaLabel="add"
+          className="fab"
+          icon={<SpeedDialIcon />}
+        >
+          <SpeedDialAction
+            icon={<CollectionsBookmarkIcon />}
+            tooltipTitle="Add Item List"
+            onClick={() => setItemListModalOpen(true)}
+          />
+        </SpeedDial>
+        <ItemListModal
+          add
+          open={itemListModalOpen}
+          close={() => setItemListModalOpen(false)}
+          itemList={initialItemListInput}
+        />
+      </div>
+    );
+  }
+
+  const itemList = useAppSelector((s) => selectItemsListById(s, listId)) as TypeDBItemList;
 
   const [initialItem, setInitialItem] = useState<TypeItem>({
     ...defaultInitialItem,

@@ -65,6 +65,12 @@ function Home() {
           <AddItem listId={list._id} />
         </TabPanel>
       ))}
+
+      {itemLists.length === 0 ? (
+        <div>
+          <AddItem listId={undefined} />
+        </div>
+      ) : null}
     </div>
   );
 }
